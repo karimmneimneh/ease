@@ -37,6 +37,10 @@ It never sends an email, never posts anything, schedules nothing, never moves or
 
 To remove Day One, go to Customize > Plugins and uninstall it. Your folder and your files stay exactly as they are.
 
+## Privacy
+
+EASE Day One has no server and collects nothing. Its skills run inside Claude and work only in the folder you choose and through the tools you connect yourself. Your first task can read your email or files to produce a draft, which is saved in your folder or as a Gmail draft; nothing is sent. The progress file it keeps records only which setup steps are done. How Claude itself handles your data is covered by Anthropic's own terms and privacy policy.
+
 ## Where it leads
 
 Day One ends at a clean hand-off. Once your setup passes the health check and you have logged a first win, say **"am I ready for EASE OS"**, and the graduate skill explains EASE OS, tells you where to get it and walks the same install you already know. Everything you set up here carries over; EASE OS builds on it and never resets it.

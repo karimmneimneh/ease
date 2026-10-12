@@ -49,6 +49,10 @@ Every file it writes stays inside your Cowork folder; the only other thing it ca
 - **Removing.** Nothing you wrote is ever deleted. The audit only ever deletes system clutter (`.DS_Store` files and empty folders), and even then only on your yes; anything else it clears is moved to `_archive/`. inbox-triage copies your item into its archive word for word before taking it out of your inbox.
 - **Undo.** Say "restore [file] from its backup" or "move [file] back from the archive". The audit skill finds the right copy, shows you what will change, backs up the current version first and acts only on your yes. Every move to `_archive/` is logged in `_archive/archive-log.md`, so it always knows where a file came from.
 
+## Privacy
+
+EASE OS has no server and collects nothing. Its skills run inside Claude and read and write only the files in the Cowork folder you set it up in. Some of those files can hold personal details, such as the names and emails in messages you ask it to log, or facts you ask it to remember. They stay in your folder, under your control, and the kit sends nothing anywhere. How Claude itself handles your data is covered by Anthropic's own terms and privacy policy.
+
 ## Upgrading or removing
 
 If you installed from a zip, upgrade by removing the old version first (Customize > Plugins > Uninstall), then uploading the new zip. To remove EASE OS for good, uninstall it the same way. Either way your folder and your files stay exactly as they are.

@@ -1,7 +1,7 @@
 {
   "name": "ease-os",
   "displayName": "EASE OS",
-  "version": "12.0.0",
+  "version": "12.0.1",
   "description": "Eleven generic workspace skills that set up and maintain a Claude Cowork workspace safely: setup, hygiene audit, memory routing and tiering, project scaffolding, inbox triage, correspondence logging, a critical-thinking sparring partner, session audit, memory consolidation, a check for switched-off skills and an orientation tour. Nothing changes without your approval, anything replaced is backed up first and nothing you wrote is ever deleted. Install, then say 'what does the EASE OS plugin do' for the tour, then 'optimise my workspace'.",
   "author": {
     "name": "Karim Mneimneh",
@@ -11,6 +11,7 @@
   "homepage": "https://karimmneimneh.com",
   "repository": "https://github.com/karimmneimneh/ease",
   "documentationUrl": "https://github.com/karimmneimneh/ease/tree/main/ease-os#readme",
+  "privacyPolicyUrl": "https://github.com/karimmneimneh/ease/tree/main/ease-os#privacy",
   "supportUrl": "https://github.com/karimmneimneh/ease/issues",
   "license": "MIT",
   "keywords": [
