@@ -10,6 +10,8 @@
   },
   "homepage": "https://karimmneimneh.com",
   "repository": "https://github.com/karimmneimneh/ease",
+  "documentationUrl": "https://github.com/karimmneimneh/ease/tree/main/ease-os#readme",
+  "supportUrl": "https://github.com/karimmneimneh/ease/issues",
   "license": "MIT",
   "keywords": [
     "cowork",
