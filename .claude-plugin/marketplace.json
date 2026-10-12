@@ -1,0 +1,23 @@
+{
+  "name": "ease",
+  "owner": {
+    "name": "Karim Mneimneh",
+    "email": "karim@karimmneimneh.com",
+    "url": "https://karimmneimneh.com"
+  },
+  "metadata": {
+    "description": "EASE: two Claude Cowork plugins that set up and look after your workspace safely."
+  },
+  "plugins": [
+    {
+      "name": "ease-os",
+      "source": "./ease-os",
+      "description": "Eleven workspace skills that set up and maintain a Claude Cowork workspace safely. Nothing changes without your approval."
+    },
+    {
+      "name": "ease-day-one",
+      "source": "./ease-day-one",
+      "description": "A from-zero, safe setup guide for complete beginners on Claude Cowork, ending in one real result."
+    }
+  ]
+}
