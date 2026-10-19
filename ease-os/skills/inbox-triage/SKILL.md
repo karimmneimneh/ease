@@ -18,7 +18,7 @@ Walks the inbox item by item (or a group the user has seen, if they ask to speed
 
 The inbox is a holding pen for thoughts captured between sessions. Each line is appended in the format `- [YYYY-MM-DD HH:MM] [type?] thought goes here`, where the `[type?]` tag is optional. This skill is the only sanctioned way items leave the inbox.
 
-**Capturing a thought.** When the user says "add this to my inbox: [thought]" (or "park this for later", "inbox this"), show the exact line in that format and append it to the end of `inbox/inbox.md` on their yes. Nothing else in the file changes. If the file does not exist yet, say that "optimise my workspace" creates it, or offer to create it with the heading `# Inbox` on the same yes.
+**Capturing a thought.** When the user says "add this to my inbox: [thought]" (or "inbox this"), show the exact line in that format and append it to the end of `inbox/inbox.md` on their yes. Nothing else in the file changes. If the file does not exist yet, say that "optimise my workspace" creates it, or offer to create it with the heading `# Inbox` on the same yes.
 
 ## When to trigger
 
@@ -31,7 +31,7 @@ The inbox is a holding pen for thoughts captured between sessions. Each line is 
 
 Do not trigger if:
 - The user is in the middle of another task and mentions the inbox in passing
-- The inbox is empty (read it first; if no items, say so and stop). **If `inbox/inbox.md` does not exist at all**, which is normal before the setup skill has run, say so plainly, mention that "optimise my workspace" creates it, and stop. Do not create it here and do not surface a raw file-not-found error
+- The inbox is empty (read it first; if no items, say so and stop). **If `inbox/inbox.md` does not exist at all**, which is normal before the setup skill has run, say so plainly, mention that "optimise my workspace" creates it and stop. Do not create it here and do not surface a raw file-not-found error
 
 ## Read first
 
@@ -68,7 +68,7 @@ For each item, in order:
    - "Suggest discard. Keep, modify or release? Released items are kept in full in the archive, not deleted." (three options)
 5. **On confirmation:**
    - Append/insert the item at the destination, formatted correctly for that file
-   - **Write the item verbatim into `inbox/triaged-archive.md`, then remove it from `inbox/inbox.md`.** (If `triaged-archive.md` does not exist yet, create it first, on the same yes, with the heading `# Triaged archive`, the columns `| Captured | Triaged | Item (full text) | Type | Destination | Notes |` and a `## Discard log` section with `| Captured | Triaged | Item (full text) | Reason |`. If the file exists but has no Discard log section, add it the same way. In the item text, write any `|` character as `\|` so the row stays intact and the words stay exact.) In that order, never the reverse: the archive copy is what makes the removal safe, so it exists before the original goes. The archive row carries capture date, triage date, type, destination, and **the item's own words in full** - a one-line summary is a label on the row, never a replacement for the text. This is the kit's backup promise applied to the one skill that removes content rather than replaces it.
+   - **Write the item verbatim into `inbox/triaged-archive.md`, then remove it from `inbox/inbox.md`.** (If `triaged-archive.md` does not exist yet, create it first, on the same yes, with the heading `# Triaged archive`, the columns `| Captured | Triaged | Item (full text) | Type | Destination | Notes |` and a `## Discard log` section with `| Captured | Triaged | Item (full text) | Reason |`. If the file exists but has no Discard log section, add it the same way. In the item text, write any `|` character as `\|` so the row stays intact and the words stay exact.) In that order, never the reverse: the archive copy is what makes the removal safe, so it exists before the original goes. The archive row carries capture date, triage date, type, destination and **the item's own words in full** - a one-line summary is a label on the row, never a replacement for the text. This is the kit's backup promise applied to the one skill that removes content rather than replaces it.
 6. **Move to the next item.**
 
 If the user says "skip this one for now", leave it in `inbox/inbox.md`.

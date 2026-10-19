@@ -1,6 +1,6 @@
 ---
 name: workspace-hygiene
-description: "Runs a systems-architect hygiene audit of the user's full Cowork workspace. Use when the user says 'audit my workspace', 'hygiene check', 'clean up my files', 'workspace audit', 'system architect review', 'find redundancies' or wants a structural review of files, memory, routing, dashboards or state files and scheduled tasks. Also reads what scheduled-task instructions say and reports any that have gone stale, without changing them. Not for first-time or repeat setup, which belongs to the ease-setup skill: that one adds what is missing, this one audits what is already there. Produces a severity-ranked report at outputs/system-audits/hygiene-audit-YYYY-MM-DD.md, asks about each high and medium finding and proposes low-risk fixes for approval. Also restores a file from its backup or from `_archive/` on 'restore [file] from its backup' or 'move [file] back from the archive'. Different from session-audit (which is end-of-session)."
+description: "Runs a systems-architect hygiene audit of the user's full Cowork workspace, or of one named project. Use when the user says 'audit my workspace', 'hygiene check', 'clean up my files', 'workspace audit', 'system architect review', 'find redundancies' or wants a structural review of files, memory, routing, dashboards or state files and scheduled tasks. Also reads what scheduled-task instructions say and reports any that have gone stale, without changing them. Not for first-time or repeat setup, which belongs to the ease-setup skill: that one adds what is missing, this one audits what is already there. Produces a severity-ranked report at outputs/system-audits/hygiene-audit-YYYY-MM-DD.md, asks about each high and medium finding and proposes low-risk fixes for approval. Also restores a file from its backup or from `_archive/` on 'restore [file] from its backup' or 'move [file] back from the archive'. Different from session-audit (which is end-of-session)."
 ---
 
 # Workspace hygiene audit
@@ -22,7 +22,7 @@ Findings are workspace-shaped, not Claude-shaped: file structure, memory layers,
 
 ## When to run
 
-- The user asks for a hygiene check, workspace audit, system review, or "clean up my files"
+- The user asks for a hygiene check, workspace audit, system review or "clean up my files"
 - A specific symptom: sessions feel slow, the same rule is asked for twice, a folder feels unmanageable
 - After any major workspace reorganisation
 - Monthly cadence is healthy. Quarterly is the minimum.
@@ -49,13 +49,14 @@ These rules cut the audit's token cost roughly in half versus a naive run. Honou
 
 This is the most important rule in this skill. It runs on a workspace that may not be the one it was written for, and that the user has invested in.
 
-- **Never delete, move, or rewrite a file without the user's explicit, item-by-item approval.** There is no unattended change mode. Every change is shown first. Every delete or move is its own approval item and is never folded into a list of other fixes; the one grouped item is "remove all N `.DS_Store` files", with every path listed. Other fixes are approved one at a time or as a yes on a list the user has read line by line (Step 10).
+- **Never delete, move or rewrite a file without the user's explicit, item-by-item approval.** There is no unattended change mode. Every change is shown first. Every delete or move is its own approval item and is never folded into a list of other fixes; the one grouped item is "remove all N `.DS_Store` files", with every path listed. Other fixes are approved one at a time or as a yes on a list the user has read line by line (Step 10).
 - **Never assume a path is safe to clean up.** Any specific paths named below (for example `outputs/old-reports/`) are only examples. On this user's system they may not exist, or may hold work that matters. Confirm a path exists and is genuinely disposable, then PROPOSE it; never act on it blind.
 - **This skill only ever proposes.** It reports findings and suggests improvements. The user decides and approves. When in doubt, leave it alone and flag it.
+- **Nobody there to answer means report only.** If a scheduled task starts this skill, or no one can answer a question in this run, write the report and stop. Ask nothing, fix nothing, move or delete nothing. If you cannot tell whether the user is there, assume they are not.
 
 ### Step 0.5: Is there a workspace to audit yet?
 
-Check whether the workspace has any of the structure this skill audits: an `about-me/` folder, a `projects/` folder, a `workstations/` folder, or a root `CLAUDE.md`. **If none of them exists**, this is a workspace the setup skill has not run on yet. Say so in one line, point the user at "optimise my workspace", and stop. Do not run the scans, and do not produce a severity-ranked report about an empty folder: a new user reading "High severity" findings about a workspace they have not built yet learns nothing and is needlessly alarmed.
+Check whether the workspace has any of the structure this skill audits: an `about-me/` folder, a `projects/` folder, a `workstations/` folder or a root `CLAUDE.md`. **If none of them exists**, this is a workspace the setup skill has not run on yet. Say so in one line, point the user at "optimise my workspace" and stop. Do not run the scans, and do not produce a severity-ranked report about an empty folder: a new user reading "High severity" findings about a workspace they have not built yet learns nothing and is needlessly alarmed.
 
 Where some structure exists but a given step's target does not, that step skips and says so in the report. No step errors on a missing path.
 
@@ -75,17 +76,25 @@ Extract:
 - Items in the "Recommended fix sequence" that were never executed - these become candidates for THIS audit
 - Structural weaknesses surfaced previously - note any that recur
 - The `SESSION-START-COST:` line, if present
+- Fixes the user declined, from section 7 of that report: a finding they chose to keep is reported as "known, kept on [date]", not raised again as new
 
 If no prior audit exists, this is the first run. Note that fact and proceed.
 
 ### Step 1: Scope the audit (use AskUserQuestion)
 
-Two questions before any work starts. If AskUserQuestion is not available, ask the same questions in plain text and wait for the answers:
+If the user just said "audit my workspace" with nothing more, or their request already answers the questions below, do not ask. Take the defaults (whole workspace, the recommended depth, report plus interactive approval), say them in one line and start. The user can change any of them by replying. If nobody is there to answer (see Safety), take the defaults with report only.
 
-1. **Depth:** Structural scan + content sampling (recommended, ~85% of value), Deep content read (slower, exhaustive), or Quick structural only (folder tree + sizes, shallow).
-2. **Output mode:** Report + interactive approval (recommended), or Report only. Every proposed change is shown before it happens, and every deletion or move is its own approval item. The skill only ever proposes; it acts only on items the user has approved.
+Otherwise ask, in one go. If AskUserQuestion is not available, ask the same questions in plain text and wait for the answers:
 
-Default to recommended on both.
+1. **Scope:** Whole workspace (recommended) or one project. If the user names a project ("hygiene check on [project]"), run Step 1b.
+2. **Depth:** Structural scan + content sampling (recommended, ~85% of value), Deep content read (slower, exhaustive) or Quick structural only (folder tree + sizes, shallow).
+3. **Output mode:** Report + interactive approval (recommended), or Report only. Every proposed change is shown before it happens, and every deletion or move is its own approval item. The skill only ever proposes; it acts only on items the user has approved.
+
+### Step 1b: One project only
+
+Audit only the project's footprint: `projects/[name]/`, `outputs/[name]/`, any scheduled task whose name or instructions mention the project and any file that points at the project's paths (search for `projects/[name]/`). Steps 2 to 8 run on that footprint only. Skip the session-start cost figure, which is a whole-workspace number. The report, the approval steps and every safety rule are unchanged.
+
+Save the report as `outputs/system-audits/hygiene-audit-project-[name]-YYYY-MM-DD.md`. The word "project" keeps it out of Step 0's search, so a one-project report never becomes the baseline for a whole-workspace audit.
 
 ### Step 2: Map structure (one bash call)
 
@@ -95,13 +104,13 @@ In parallel (separate tool turn), only if a scheduled-tasks tool is available (d
 
 ### Step 3: Sample-read routing-critical files (parallel, metadata-first)
 
-Routing files to inspect: root `CLAUDE.md`, every file its session-start section names (read the section rather than assuming the kit's three, because the user may have changed it), each workstation `CLAUDE.md`, each project `CLAUDE.md`, `custom-workflows.md`.
+Routing files to inspect: root `CLAUDE.md`, every file its session-start section names (read the section rather than assuming the kit's default list, because the user may have changed it), each workstation `CLAUDE.md`, each project `CLAUDE.md`, `custom-workflows.md`.
 
 **Inspect metadata first.** A single bash command returning `wc -lc` (lines and bytes) + `head -3` for every routing file. Compare line counts against the ceilings in root CLAUDE.md's `## Memory ceilings` section (or wherever this workspace keeps them; if none are written down, use the kit defaults: 50 / 150 / 200 lines). Compare last-updated dates against today.
 
 **Report bytes as well as lines.** The line ceiling catches a file gaining entries; it misses entries growing heavier, which is what happens when an entry is added to rather than replaced. Report both for every routing file, and compare bytes per line with the prior audit: a rising figure means a file is gathering history, not topics. For any file over its ceiling, also name its largest single section, because splitting that section is usually the fix.
 
-**Treat a file with no room for its next entry as full.** If what is left under the ceiling is smaller than one typical entry in that file, flag it now rather than next time.
+**Early warning: a file with no room for its next entry.** If what is left under the ceiling is smaller than one typical entry in that file, flag it now as nearly full, rather than next time. (The kit's one test for "full" is unchanged: the line count plus the entry waiting would reach or pass the ceiling.)
 
 **Name the writer.** When proposing to shrink a file, name what keeps adding to it (a skill, a scheduled task or a habit). A file brought under its ceiling with nothing capping its writer is back over within days; propose the cap as its own item alongside.
 
@@ -124,7 +133,17 @@ Look for:
 
 ### Step 3.5: CLAUDE.md drift checks (the six)
 
-Six structural checks on the workspace's CLAUDE.md files and always-loaded MDs. Each is generic logic-vs-data hygiene: keep volatile state, restated rules and stacked changelogs out of the files that load every session. Run them whenever Step 3 surfaces a routing file worth a closer look. All six are propose-only: detect, then show the fix and wait for approval.
+Six structural checks on the workspace's CLAUDE.md files and always-loaded MDs. Each is generic logic-vs-data hygiene: keep volatile state, restated rules and stacked changelogs out of the files that load every session. Not every check earns a run every time, so run them in three tiers:
+
+- **Every run:** Checks C, D and F. They are cheap and usually find something.
+- **Every run, short report on repeats:** Check A. Run the search. If a hit is one the prior audit raised and the user chose to keep (Step 12 lists declined fixes in section 7 of the report), list it as one line, "known, kept on [date]", not as a new finding.
+- **Only when something changed:** Checks B and E. B finds copied rules, so it only finds something after a rule was edited. E finds docs that trail a changed skill or task, so it only finds something after one changed. One test gates both. List the files changed since the prior audit Step 0 found, and state how many there are:
+
+    find . -name '*.md' -newer "[path of the prior audit]" ! -path '*/.git/*' ! -path '*/_*/*' ! -name '*.backup-*' ! -path './outputs/system-audits/*' | sort
+
+  Run B if that list holds a CLAUDE.md, an `about-me/` file or a file the session-start section names. Run E if it holds a SKILL.md, or if the task list holds a task the prior report did not list, or if the user says a skill or task changed. Otherwise skip them and say so in the report. If Step 0 found no prior audit there is nothing to compare against, so run both.
+
+All six are propose-only: detect, then show the fix and wait for approval.
 
 **Check A - State in the charter.** A CLAUDE.md should hold routing plus stable rules; volatile state (a live status, a near-term date) belongs in a `memory.md` with a one-line pointer. The tell: a status changed and a CLAUDE.md had to be edited. Detect:
 
@@ -132,7 +151,7 @@ Six structural checks on the workspace's CLAUDE.md files and always-loaded MDs. 
 grep -rinE "current status|pending|deadline|awaiting|this week|next step:|as of [0-9]" --include=CLAUDE.md projects workstations 2>/dev/null
 ```
 
-Flag any CLAUDE.md carrying a live status or near-term date that will change within weeks. Fix (on approval): move the volatile lines into that project's `memory.md`, leave a one-line pointer ("Current status in `memory.md`"). A single rarely-changing charter line (for example "DORMANT", "Closed") is fine; rolling week-to-week status is not.
+Flag any CLAUDE.md carrying a live status or near-term date that will change within weeks. Fix (on approval): move the volatile lines into that project's `memory.md` (first apply the kit's one test for "full"; if they would not fit, propose "tidy my memory for [file]" first), leave a one-line pointer ("Current status in `memory.md`"). A single rarely-changing charter line (for example "DORMANT", "Closed") is fine; rolling week-to-week status is not.
 
 **Check B - Cross-file restatement.** The same rule, list or definition copied into several files instead of owned once and pointed to. This breaks single-source-of-truth: a rule is owned by one file and referenced from others, never re-stated in full. Detect by taking a known owned rule's signature phrase and searching for it across CLAUDE.md files, then counting how many restate it:
 
@@ -173,7 +192,7 @@ Fix: apply Check D.
 - Log the move like any other: append `date | [file] changelog history | _archive/[name]-changelog-archive.md | changelog trim` to `_archive/archive-log.md`.
 
 **Check E - Doc-vs-executable lag (the routing prose trails the live behaviour).**
-A rule, policy or connector-access change gets rolled out to the things that *run* (skill sources and scheduled-task prompts), but a CLAUDE.md routing table, connector-usage table, or a "pulls from / reads / uses" line still describes the *old* behaviour. The doc now contradicts the live skill it points to. The tell: an executable was updated for a rule change and a CLAUDE.md describing it was not.
+A rule, policy or connector-access change gets rolled out to the things that *run* (skill sources and scheduled-task prompts), but a CLAUDE.md routing table, connector-usage table or a "pulls from / reads / uses" line still describes the *old* behaviour. The doc now contradicts the live skill it points to. The tell: an executable was updated for a rule change and a CLAUDE.md describing it was not.
 
 Detect: for any CLAUDE.md line that says a named skill "pulls from / reads / uses [X]", open that skill's source and confirm it still does it; a mismatch (source updated, doc not) is the lag.
 
@@ -183,7 +202,7 @@ Fix (on approval): update the routing doc to match the live executable and the e
 
 ### Step 3.6: Clock-time drift in docs that describe tasks
 
-Extends the CLAUDE.md drift checks to any doc that *describes* a scheduled or recurring task rather than being the task itself: a registry doc, a how-to note, or a template's empty-state copy should name the task it describes, never restate its clock time or day. The time rots the moment the task reschedules, and the describing doc is rarely the one that gets updated when it does.
+Extends the CLAUDE.md drift checks to any doc that *describes* a scheduled or recurring task rather than being the task itself: a registry doc, a how-to note or a template's empty-state copy should name the task it describes, never restate its clock time or day. The time rots the moment the task reschedules, and the describing doc is rarely the one that gets updated when it does.
 
 Detect:
 ```
@@ -196,7 +215,7 @@ echo "files inspected: $n"
 ```
 Adjust the folders to wherever this workspace keeps its task-describing docs. For each hit near a named task, compare against that task's live schedule (the scheduled-tasks tool if available, or `custom-workflows.md` if a fresh list is impractical mid-audit). Flag any mismatch, and flag every hit as a candidate even if it currently happens to be correct - a correct clock-time today is still a future drift risk once the task reschedules.
 
-Fix (on approval): strip the clock time, name the task, and where useful point to the registry file for the current cadence. Exempt (leave as they are): frozen historical changelog entries; dated records in log or tracker rows (for example "sent 2026-05-25 10:30"), which record when something happened rather than when a task runs; and example timestamps inside sample data. Only a live statement of when a task runs gets stripped.
+Fix (on approval): strip the clock time, name the task and where useful point to the registry file for the current cadence. Exempt (leave as they are): frozen historical changelog entries; dated records in log or tracker rows (for example "sent 2026-05-25 10:30"), which record when something happened rather than when a task runs; and example timestamps inside sample data. Only a live statement of when a task runs gets stripped.
 
 ### Step 3.7: Open items left open (report only)
 
@@ -204,7 +223,7 @@ Walk every `memory.md` and `CLAUDE.md` for lines or sections headed "Open items"
 
 ### Step 4: Audit the outputs folder
 
-If the workspace has an `outputs/` folder, list its subfolders read-only and note any obviously old or dated state files as cleanup candidates to PROPOSE (never act on them). If there is no such structure, skip this step. Do not assume any specific subfolder such as daily-audit or morning-brief exists.
+If the workspace has an `outputs/` folder, list its subfolders read-only and note any obviously old or dated state files as cleanup candidates to PROPOSE (never act on them). If there is no such structure, skip this step. Do not assume any specific subfolder exists.
 
 ### Step 5: Audit scheduled tasks (propose registry reconciliation)
 
@@ -212,11 +231,13 @@ If no scheduled-tasks tool is available in this session, skip this whole step an
 
 **Never trust an empty or short task list at face value.** If the list comes back empty, or holds fewer tasks than `about-me/custom-workflows.md` records (count real rows only, never a placeholder row such as `_(add a row when you create a scheduled task)_`), treat it first as a read that failed or looked in the wrong place, not as "no tasks": from inside the audit the two look identical. Re-check once; if the counts still will not reconcile, report "task list could not be read reliably", never "clean".
 
+**Read the whole list, not the first page.** A long task list can come back in pages. If the tool says there are more results, keep reading until there are none before you count anything: a first page on its own looks exactly like a short list.
+
 **If the list shows whether a task needs this computer**, flag (never change) any task whose instructions read or write files in this folder but which is not set to run on this computer: a task like that can run with no access to the folder and quietly do nothing.
 
 From the task list:
 - Sort by enabled / disabled. Disabled tasks that fired (one-time) are normal; disabled tasks that should be running are broken.
-- For each enabled task: when did it last run? If older than its cadence suggests, the task may be stuck.
+- For each enabled task: when did it last run? If older than its cadence suggests, the task may be stuck. Use the task list's own last-run time where it has one. If you judge by a file the task writes, first check the name it writes today, from its instructions: a renamed output leaves no file under the old name, which looks exactly like a run that never happened.
 - **Cross-check against `about-me/custom-workflows.md`.** If that file does not exist, note in the report that the workspace keeps no task registry and skip the diff; do not create one as a side effect. Otherwise build the diff in two columns: tasks live but not registered, tasks registered but not live.
 
 Flag the diff as a finding and PROPOSE reconciling the registry (adding the missing tasks, updating changed schedules, in the existing table format). Show the exact rows you would add and get the user's approval before writing. Never write to their registry unattended. **This step never touches the live scheduled tasks themselves: it reconciles the written registry against them and nothing more.** It does not pause, edit, reschedule or delete a task at any point. Step 11 may CREATE a new task, but only one the user has seen and approved in Step 10, and creating a new task is the only scheduled-task write anywhere in this skill.
@@ -230,6 +251,8 @@ Step 5 checks whether a task exists and is recorded. This step checks whether it
 3. **Expired dates and frozen counts:** "as of [date]", "the three projects", "all five tasks". A count written into prose about something that grows will be wrong later, and it will look like a fault in the thing counted.
 4. **Schedule restated in the instructions:** the schedule belongs in the task's own schedule setting. Instructions that also say "every Monday at 9" give two sources of truth, and only one gets updated.
 5. **Questions in a run nobody watches:** an instruction to ask the user or wait for approval inside a task that fires on its own. With nobody there, the run stalls or the question gets answered without the user.
+6. **Lists and settings written into the instructions:** a list of names or a number that changes, typed straight into the task's instructions. Changing it means rewriting the instructions. Suggest moving it to a file the task reads, so the user edits the file instead.
+7. **A one-time reminder with no "already done" branch:** a one-off task that does not say what to do if the job was finished before it fired. Suggest one line such as "If this is already done, say so and stop."
 
 Report each finding with the task name, the exact line and suggested new wording. This step never edits a task: the user makes the change, exactly as Step 5 and Step 11 say.
 
@@ -241,17 +264,19 @@ For each source skill not visible in the runtime list:
 - Confirm the SKILL.md exists and has substantive content (`wc -l` >= 30, has frontmatter)
 - Categorise: never installed, removed or not reinstalled, intentionally disabled (check `about-me/disabled-skills.md`)
 
-Flag the drift as a high-severity finding and surface the count. Show the exact rows you would add, then, when the user approves, add them to the `Pending reinstall` table in `custom-workflows.md` with each drift candidate (skill name, source line count, why-it-matters, date logged, status). If the file exists but has no `Pending reinstall` table (older setups), show the heading and header row `| Skill | Source lines | Why it matters | Date logged | Status |` with the rows, and add both on the same yes. If `custom-workflows.md` does not exist, say so and stop there; do not create it as a side effect, exactly as in Step 5. This is a reversible documentation update, but it is still only made on the user's approval, on rows they have seen.
+A source folder whose skill has a row in the `Custom skills` table of `custom-workflows.md` saying it is not uploaded yet (skill-builder writes it that way), or that has a matching `outputs/skills/[name].zip` and no Pending reinstall row, is a draft the user built and has not installed: list it as one Low line with the upload route (Customize, then Skills, then "+", "+ Create skill", "Upload a skill"), not as drift. Ignore the `outputs/skills/backups/` folder. For any other missing skill, flag the drift as a high-severity finding and surface the count. Show the exact rows you would add, then, when the user approves, add them to the `Pending reinstall` table in `custom-workflows.md` with each drift candidate (skill name, source line count, why-it-matters, date logged, status). If the file exists but has no `Pending reinstall` table (older setups), show the heading and header row `| Skill | Source lines | Why it matters | Date logged | Status |` with the rows, and add both on the same yes. If `custom-workflows.md` does not exist, say so and stop there; do not create it as a side effect, exactly as in Step 5. This is a reversible documentation update, but it is still only made on the user's approval, on rows they have seen.
 
 **Then close the loop the other way.** For each row in the `Pending reinstall` table whose Status is still open, check whether that skill now appears in this session's skill list. If it does, the row is stale: it tells a future session the skill is missing when it is not, and invites a needless reinstall. Propose updating that row's Status to `resolved [today's date]: now installed`, showing the row before and after. Never remove the row. This is an edit to an existing file, so it follows the Step 11 backup rule and happens only on the user's yes. A skill still missing keeps its row unchanged. This check runs whenever `custom-workflows.md` has a Pending reinstall table, even when there is no `outputs/skills/` folder.
 
+**Same skill name under two plugins.** Check this session's skill list for one skill name that appears under two plugin names (for example `plugin-a:report` and `plugin-b:report`). When the user's words match both, which one runs cannot be predicted. Report each pair as a Medium finding with both full names. The fix is the user's: turn one off, or rename one if it is their own. This skill never turns off or edits a plugin.
+
 ### Step 7: Identify dead weight (use the ALWAYS SAFE list)
 
-The items below are the ONLY ones the skill may propose to clean up, and even these are never executed without approval. List every item by its full path, then ask about each one on its own: a delete or a move is never approved as part of a batch of other fixes. The single exception is `.DS_Store` files, below. **Impact check first.** Before proposing any move or delete, search the workspace's instruction and registry files (every `CLAUDE.md`, `about-me/custom-workflows.md`, and any scheduled-task prompts the scheduled-tasks tool can list) for the path. If anything points at it, name that dependent in the approval item and recommend keeping the file where it is; moving it would break the pointer silently. Before proposing any path-specific item, confirm that path actually exists in this workspace and is genuinely disposable - the example paths come from one particular setup and may mean nothing, or hold real work, on this one.
+The items below are the ONLY ones the skill may propose to clean up, and even these are never executed without approval. List every item by its full path, then ask about each one on its own: a delete or a move is never approved as part of a batch of other fixes. The single exception is `.DS_Store` files, below. **Impact check first.** Before proposing any move or delete, search the workspace's instruction and registry files (every `CLAUDE.md`, `about-me/custom-workflows.md` and any scheduled-task prompts the scheduled-tasks tool can list) for the path. If anything points at it, name that dependent in the approval item and recommend keeping the file where it is; moving it would break the pointer silently. Before proposing any path-specific item, confirm that path actually exists in this workspace and is genuinely disposable - the example paths are illustrations only and may mean nothing, or hold real work, in this workspace.
 
 **Safe to propose DELETING (system clutter only, never anything the user wrote; always confirm the path exists first):**
 - `.DS_Store` files (macOS folder metadata; the system recreates them). These count as ONE item: "remove all N `.DS_Store` files", with every path listed in the report
-- Empty folders (no `.gitkeep`, no `.keep`, no hidden file, nothing inside at all), **except structure the kit sets up and expects to exist even when empty**: the top-level `about-me/`, `workstations/`, `projects/`, `inbox/`, `outputs/`, `library/` and `_archive/` folders, any folder inside `projects/` or `workstations/`, and any `outputs/[name]/` whose project exists. Those are never proposed for deletion
+- Empty folders (no `.gitkeep`, no `.keep`, no hidden file, nothing inside at all), **except structure the kit sets up and expects to exist even when empty**: the top-level `about-me/`, `workstations/`, `projects/`, `inbox/`, `outputs/`, `library/` and `_archive/` folders, any folder inside `projects/` or `workstations/` and any `outputs/[name]/` whose project exists. Those are never proposed for deletion
 
 **Safe to propose MOVING to `_archive/` (never deleting; the file stays recoverable):**
 - Files whose filename contains `(old)`, `(obsolete)`, `-legacy`, `-deprecated`
@@ -305,7 +330,7 @@ Skip if output-mode is report-only.
 
 Use AskUserQuestion (if it is not available, ask the same questions in plain text, one at a time, and wait for each answer). Batch the high-severity decisions into one call with up to 4 questions. Always provide a Recommended option. Phrase each option as a concrete action with consequences spelled out.
 
-For M-severity findings, **show the full list first**, one line per fix naming the file and exactly what changes, then ask a single "apply these?" question with three options: do all as shown, approve individually, skip. **The list is not optional and never collapses into a count.** "Do all" is a yes on items the user has read, which is what the Safety section above requires; a yes on a hidden batch is not, and this skill never asks for one. Never put a change to a CLAUDE.md or a memory.md in the "do all" batch, and never a delete, a move or a changelog trim (which moves text into `_archive/`): those are always shown in full and approved on their own.
+For M-severity findings, **show the full list first**, one line per fix naming the file and exactly what changes, then ask a single "apply these?" question with three options: do all as shown, approve individually, skip. **The list is not optional and never collapses into a count.** "Do all" is a yes on items the user has read, which is what the Safety section above requires; a yes on a hidden batch is not, and this skill never asks for one. Never put a change to a CLAUDE.md, a memory.md or a file in `about-me/` in the "do all" batch, and never a delete, a move or a changelog trim (which moves text into `_archive/`): those are always shown in full and approved on their own.
 
 ### Step 11: Execute approved fixes
 
@@ -313,21 +338,21 @@ For each approved fix, do the file operation directly. Rules:
 - Archive (move to `_archive/`) where the file has any historical value. **Keep its folder path under `_archive/`** (`projects/x/INSTALL.md` goes to `_archive/projects/x/INSTALL.md`), so two files with the same name never meet. If that path is already taken, add the date to the new name (`INSTALL.2026-09-30.md`); never overwrite anything in `_archive/`. Then append one line to `_archive/archive-log.md` (create it with a heading if absent): `date | original path | archived path | reason`. Show that log line as part of the move's approval item, so the user approves the move and its record together. The log is what makes every move reversible
 - Delete only items on the ALWAYS SAFE list that the user explicitly approved in Step 10 of this session; the ALWAYS SAFE classification only ever permits proposing, never deleting on its own
 - Edit any file in place surgically, never wholesale. **Before replacing text in ANY existing file - a CLAUDE.md, a memory.md, an about-me file, a resource file, a template, anything - copy the original to `[file].backup-[today's date]` (if a backup of that name already exists, add the time, `[file].backup-[date]-[HHMM]`; never overwrite an existing backup) and never remove that backup.** The kit promises a dated backup of anything it replaces, so the rule follows the act, not the filename: a changelog trim and a stale-date fix are replacements exactly as much as a constitution edit is
-- Any edit to a CLAUDE.md (the constitution) **or to a memory.md** must be shown in full and approved on its own, never applied as part of a blanket "do all"
-- Create scheduled tasks for items that need recurring enforcement (e.g. a monthly clean-up reminder). A task this skill creates may only remind the user (for example "time for your monthly workspace audit: say audit my workspace"); its prompt must never apply, move or delete anything, and never ask questions in a run nobody is watching. The task's approval item also shows the row it adds to the `Scheduled tasks` table in `about-me/custom-workflows.md` (if that file exists), so the next audit finds it registered. **And only ones the user saw and approved in Step 10, and only if a scheduled-tasks tool is available; if it is not, say so and put the proposed task in the report instead.** Never pause, edit, reschedule or delete an existing task: a task the user already has is theirs, and this skill proposes changes to it rather than making them
+- Any edit to a CLAUDE.md (the constitution), **a memory.md or a file in `about-me/`** must be shown in full and approved on its own, never applied as part of a blanket "do all"
+- Create scheduled tasks for items that need recurring enforcement (e.g. a monthly clean-up reminder). A task this skill creates may only remind the user (for example "time for your monthly workspace audit: say audit my workspace"); its prompt must never apply, move or delete anything, never ask questions in a run nobody is watching and never restate its own schedule in its instructions (Step 5b check 4); a one-time reminder also says what to do if the job is already done (Step 5b check 7). The task's approval item also shows the row it adds to the `Scheduled tasks` table in `about-me/custom-workflows.md` (if that file exists), so the next audit finds it registered. **And only ones the user saw and approved in Step 10, and only if a scheduled-tasks tool is available; if it is not, say so and put the proposed task in the report instead.** Never pause, edit, reschedule or delete an existing task: a task the user already has is theirs, and this skill proposes changes to it rather than making them
 - Where an approved fix changes a rule, propose the matching one-line note in the relevant CLAUDE.md (date and audit reference) as its own item: show it in full and write it only on its own yes, like any other CLAUDE.md edit
 
 ### Step 12: Re-measure, then confirm and close
 
 Re-measure before summarising: a summary written first becomes the thing the numbers are fitted to.
 
-If no fixes were applied (report-only, or everything skipped), say "no fixes applied, nothing to re-measure" in one line and go straight to the close.
+If no fixes were applied (report-only, or everything skipped), say "no fixes applied, nothing to re-measure" in one line. If the user declined any fix, add the `Declined fixes` list described below to section 7 first, then go to the close.
 
 Otherwise re-run the Step 2 inventory, unchanged so the two readings compare, and show a three-column table: metric, before (Step 2), after. At minimum: file count, total size and the size of every file a fix touched.
 
 Then compare against the estimated savings in the report (Step 9, section 7): estimated, actual and the gap. Name what explains the gap rather than averaging it away: fixes the user declined, fixes approved but not yet done and any fix that recovered much less than predicted. That last one is evidence about the estimate itself. State two honest limits. Disk size is not session cost: a smaller file that nothing loads saves nothing per session, while a smaller session-start file saves every time, so split the saving that way. And some fixes only show on the next run: list them as "deferred to next run" rather than claiming or discounting them.
 
-Fill in section 2 of the report with the fixes actually applied, and append this reconciliation to section 7, so the next audit's Step 0 reads the outcome and not only the forecast. The report is this skill's own new file, so adding to it in the same run needs no backup.
+Fill in section 2 of the report with the fixes actually applied, and append this reconciliation to section 7, ending with a `Declined fixes` list (one line each: the finding and "kept on [today's date]"), so the next audit's Step 0 reads the outcome and not only the forecast. The report is this skill's own new file, so adding to it in the same run needs no backup.
 
 Summarise what was done in one line per fix. Provide clickable links to the report and any other deliverables. If the audit surfaced a new check that should be added next time, note it in the report under a "Skill improvement suggestions" heading. Do not edit this or any SKILL.md; installed plugin skills are read-only.
 
@@ -336,9 +361,9 @@ Summarise what was done in one line per fix. Provide clickable links to the repo
 This mode stands on its own: it skips Steps 0 to 12 and needs no audit first. It runs when the user says "restore [file] from its backup", "move [file] back from the archive", "undo that change" or similar, at any time, not only after an audit.
 
 1. **Find the source.** If there is no backup and no archive-log line for the file (for example after a plain append, which keeps the earlier text in place anyway), say so plainly and offer to show the file so the user can say what to remove; any edit then follows the Step 11 backup rule.
-    For a backup: list the `[file].backup-*` copies beside the file, newest first, and ask which one if there is more than one. For an archived file: find its line in `_archive/archive-log.md` to get the original path; if there is no log line, ask the user where it should go.
-2. **Show the change.** Say exactly what will happen: which copy comes back, to which path, and what is currently at that path (if anything).
-3. **Protect the current version.** If a file already sits at the destination, back it up first under the same backup rule as Step 11 (`[file].backup-[date]`, with the time added if that name exists). Restoring never destroys the version it replaces.
+    For a backup: list the `[file].backup-*` copies beside the file, newest first, and ask which one if there is more than one. For a skill draft built with skill-builder (a file inside `outputs/skills/[name]/`, or its `.zip`), also look in `outputs/skills/backups/[name]/`. For an archived file: find its line in `_archive/archive-log.md` to get the original path; if there is no log line, ask the user where it should go.
+2. **Show the change.** Say exactly what will happen: which copy comes back, to which path and what is currently at that path (if anything).
+3. **Protect the current version.** If a file already sits at the destination, back it up first under the same backup rule as Step 11 (`[file].backup-[date]`, with the time added if that name exists); for a file inside `outputs/skills/[name]/` or its `.zip`, the backup goes to `outputs/skills/backups/[name]/` instead, so it never ends up in the next upload zip. Restoring never destroys the version it replaces.
 4. **Act only on a yes**, then confirm in one line. For an archived file, append `date | [archived path] | [original path] | restored` to `archive-log.md`. A backup stays where it is. An archived file is moved back to its original path and the log records it. Nothing is deleted.
 
 ---
@@ -358,7 +383,7 @@ This mode stands on its own: it skips Steps 0 to 12 and needs no audit first. It
 
 - Does not delete anything the user wrote: only `.DS_Store` files (as one listed item) and empty folders (each on its own yes) can be deleted. Everything else is moved to `_archive/`, each on its own yes, and logged so it can be moved back
 - Does not modify installed plugin skill files (they are read-only); it only reads skill source files (Step 6) and never edits any SKILL.md
-- Does not run as a scheduled task; this is on-demand
+- Is meant to run on demand. If a scheduled task starts it anyway, it writes the report and stops (see Safety)
 - Does not edit, pause, reschedule or delete a scheduled task or rewrite its instructions; Step 5b only reports what it finds and the user decides
 
 ---

@@ -7,7 +7,7 @@ description: "Scaffolds a new project folder pair in the Cowork workspace. Use w
 
 **Working folder check (before any write).** EASE OS lives in the user's working folder. If a file this skill would write to is missing, first check that this chat has a working folder selected and that it is the one EASE OS was set up in (it holds `about-me/` and a root `CLAUDE.md`). If no folder is selected, or the selected one has neither, ask the user to select the folder they set this kit up in (the one holding `about-me/` and `CLAUDE.md`) before offering to create anything, so nothing is written somewhere that will not be there next chat. Only if they confirm this is the right folder does the skill's own missing-file rule apply.
 
-One-shot scaffold for a new project in the Cowork workspace. Creates the folder pair, the blank files, and ties the project into the right workstation.
+One-shot scaffold for a new project in the Cowork workspace. Creates the folder pair and the blank files, and ties the project into the right workstation.
 
 ---
 
@@ -33,7 +33,7 @@ Don't proceed until all four answers are given. If the user's request already co
 
 **First, show what you will create and get a yes.** List the new folders and files (all new, nothing existing is touched) in one short message and wait for the user's yes before creating anything.
 
-**Then check the slug is free (hard precondition).** If `projects/[slug]/` or `outputs/[slug]/` already exists, stop: do not create, write, or overwrite anything. Tell the user the slug is already taken and ask for a different one, so an existing project is never overwritten with blank scaffolding. Only continue once the slug is free.
+**Then check the slug is free (hard precondition).** If `projects/[slug]/` or `outputs/[slug]/` already exists, stop: do not create, write or overwrite anything. Tell the user the slug is already taken and ask for a different one, so an existing project is never overwritten with blank scaffolding. Only continue once the slug is free.
 
 Two folders, mirroring slugs:
 
@@ -178,7 +178,7 @@ If the project belongs to a workstation that already has a row, place the new ro
 **Exit gate.** The skill cannot complete until one of the following is true:
 
 1. The user has approved the row and it has been added to root `CLAUDE.md`, confirmed via Read, or
-2. The user has declined or deferred it in any form ("skip routing for now", "not now", "leave it", or a plain no), in which case log it in `projects/[slug]/memory.md` under Open items: `- [ ] Add routing row for [slug] to root CLAUDE.md (deferred by the user YYYY-MM-DD)`, shown to the user and written on their yes, and move on. If they do not want even that line, leave it out.
+2. The user has declined or deferred it in any form ("skip routing for now", "not now", "leave it" or a plain no), in which case log it in `projects/[slug]/memory.md` under Open items: `- [ ] Add routing row for [slug] to root CLAUDE.md (deferred by the user YYYY-MM-DD)`, shown to the user and written on their yes, and move on. If they do not want even that line, leave it out.
 
 Declining is a complete answer, not a failure to answer. Only silence leaves the gate open: if the user has not responded either way, ask the trigger-phrase question once more before proceeding to Step 8, then take a second non-answer as a defer and log it as above. Never write the row to get past this gate.
 

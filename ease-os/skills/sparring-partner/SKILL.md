@@ -5,11 +5,11 @@ description: "The critical-thinking overlay. Pressure-tests any task, decision, 
 
 # Sparring partner
 
-A sparring partner hits you during the round, not in the post-mortem. The job of this skill is to make sure that whatever is being decided, drafted, planned, or sent is examined from every angle before it is committed, so the output is comprehensive and the path actually reaches the intended outcome.
+A sparring partner hits you during the round, not in the post-mortem. The job of this skill is to make sure that whatever is being decided, drafted, planned or sent is examined from every angle before it is committed, so the output is comprehensive and the path actually reaches the intended outcome.
 
-It is a thinking overlay, not a producer. It does not write the deliverable, decide for the user, or block the ship. It surfaces what was missed, what could rebound, what is weaker than it looks, and what the stronger move would be, then gets out of the way so the user decides.
+It is a thinking overlay, not a producer. It does not write the deliverable, decide for the user or block the ship. It surfaces what was missed, what could rebound, what is weaker than it looks and what the stronger move would be, then gets out of the way so the user decides.
 
-It composes existing checks rather than repeating them: it consults any rejected-pattern and proven-pattern records the user keeps, defers editorial draft gates to a domain quality-audit skill where one exists, and hands the recurring effort-vs-results question to a periodic effectiveness review if the workspace runs one. Its own contribution is the in-the-moment, any-domain pressure test that no other skill provides.
+It composes existing checks rather than repeating them: it consults any rejected-pattern and proven-pattern records the user keeps, defers editorial draft gates to a domain quality-audit skill where one exists and hands the recurring effort-vs-results question to the goals-review skill ("weekly review") if the workspace runs one. Its own contribution is the in-the-moment, any-domain pressure test that no other skill provides.
 
 ---
 
@@ -17,7 +17,8 @@ It composes existing checks rather than repeating them: it consults any rejected
 
 - A rejected-ideas record, if the user keeps one (for example a file of ideas already tried and dropped)
 - A proven-patterns record, if the user keeps one (for example a file of approaches that worked)
-- `about-me/memory.md` and the relevant project or workstation memory, for locked decisions and any stated goals
+- `about-me/about-me.md`, for the user's goals (its Goals section)
+- `about-me/memory.md` and the relevant project or workstation memory, for locked decisions
 
 None of these are required. Where a file is absent, run the lens on judgement alone and skip the consistency cross-check for that record. The one-line result still appears, naming what was absent. Never create these files just to satisfy the skill.
 
@@ -34,7 +35,7 @@ A standing posture across the session. Hold a sparring lens on whatever the user
 **The materiality bar.** Interrupt unprompted only when at least one is true:
 
 - **Irreversible or hard to undo.** A send, a publish, a deletion, a commitment to a named person, anything that cannot be quietly walked back.
-- **High cost.** Money, reputation, a key relationship, or a large block of time is at stake.
+- **High cost.** Money, reputation, a key relationship or a large block of time is at stake.
 - **Outcome-changing.** The current path will not reach the stated objective, or it rests on an assumption that, if wrong, sinks the result.
 
 If a concern clears the bar, surface it in one concise flag, in the moment, and let the user decide. If nothing clears the bar, stay silent. Do not narrate that the watch is running. Signal over noise is the whole discipline of this gear, because a sparring partner who talks constantly gets tuned out.
@@ -44,6 +45,8 @@ If a concern clears the bar, surface it in one concise flag, in the moment, and 
 Triggered by any of these phrases, or any clear equivalent asking to be challenged: "spar with me", "be my sparring partner", "poke holes", "red-team this", "stress-test this", "pressure-test this", "what am I missing", "challenge this", "push back on this", "play devil's advocate", "is this the best approach", "what could backfire", "where could this go wrong". Run the full 360 pass (below) on the thing on the table.
 
 If there is no concrete target on the table, do not spar in the abstract. Ask one question to pin down what is being pressure-tested (the draft, the decision, the plan), then run the pass. A sparring partner needs something to hit.
+
+If the request also asks for the thing to be rewritten (made clearer, simpler or tighter, "100% clear", "no extra effort to read"), run the pass first, then hand the rewrite to the output-sharpen skill ("sharpen this") with the findings as its brief. This skill never writes the deliverable, and output-sharpen holds every rewrite to the first-read clarity gate.
 
 ### Gear 3 - Sweep (session end, feeds the close)
 
@@ -69,11 +72,11 @@ The full pass for Gear 2, and the lighter version for Gear 3. Run the steps in o
    - for copy or voice, the workspace's own voice rules (for example `about-me/writing-rules.md`); for a named contact or company, whatever central research record the workspace keeps.
    A quick search for the target's key words is enough. Where a record exists but cannot be reached in this chat, the line says "not checked: [record]", never "Checked". The output carries the result as one line, for example "Checked: 1 rejected idea, 0 proven patterns, no clash with a locked decision" or "Checked: no pattern records kept, memory shows no clash". A check with no visible result cannot be told apart from one never run.
 
-2. **Objective.** What outcome is this actually for, and is it the right one? If the objective is unstated or fuzzy, naming it is the first move, because "best" cannot be judged against a target that was never set. Where the workspace records standing goals (for example in `about-me/memory.md`), tie the work to the goal it is meant to serve.
+2. **Objective.** What outcome is this actually for, and is it the right one? If the objective is unstated or fuzzy, naming it is the first move, because "best" cannot be judged against a target that was never set. Where the workspace records standing goals (the Goals section of `about-me/about-me.md`), tie the work to the goal it is meant to serve.
 
 3. **Blind spots.** What is missing? An option not generated, a stakeholder or angle not considered, a question not asked, a piece of information assumed rather than checked.
 
-4. **Backfire.** How could this rebound? Trace the second-order effects: reputation, a relationship, the commercial read, and reversibility. Who sees this, and how could they read it differently from how it was intended?
+4. **Backfire.** How could this rebound? Trace the second-order effects: reputation, a relationship, the commercial read and reversibility. Who sees this, and how could they read it differently from how it was intended?
 
 5. **Assumptions.** What is being taken as true that might not be? State the load-bearing assumption plainly and ask what would have to be true for the plan to work.
 
@@ -89,7 +92,7 @@ Keep it tight. The value is in the sharpness of the flags, not their number.
 
 Close the pass with:
 
-- **Verdict:** on track to the stated outcome: **Yes** / **At risk** / **No**, the single highest-leverage change in one line, and the consistency-check line from step 1.
+- **Verdict:** on track to the stated outcome: **Yes** / **At risk** / **No**, the single highest-leverage change in one line and the consistency-check line from step 1.
 - **Findings:** up to three, strongest first, numbered, each giving the issue, why it matters and the fix in one line. If more lenses fired, keep the three that most change the outcome; hold the rest for the Sweep or drop them. Leave this out entirely when the work is strong.
 - Any finding that needs the user's decision is asked as its own question, one at a time, with the recommended option first. A decision left buried in prose is not asked.
 
@@ -124,7 +127,7 @@ Sparring output is advisory thinking and belongs in chat, where the decision get
 - Does not make the decision. It pressure-tests; the user chooses.
 - Does not block or gate shipping. Advisory only.
 - Does not manufacture objections when the work is strong. It confirms strength and stops.
-- Does not run a weekly effort-vs-results diagnosis across areas of work - that is a periodic effectiveness review, if the workspace runs one. This skill flags a single instance in the moment and notes if it looks like a pattern worth that review.
+- Does not run a weekly effort-vs-results diagnosis across areas of work - that is the goals-review skill ("weekly review"). This skill flags a single instance in the moment and notes if it looks like a pattern worth that review.
 - Does not run the editorial quality gate on a domain draft - that is the relevant domain quality-audit skill, where one exists. This skill adds only the strategic and outcome layer on top.
 - Does not capture corrections into memory - that is the session-audit skill (or memory-router on an explicit save). The sweep runs first and surfaces what is wrong; the audit then captures what to remember.
 - Does not auto-execute anything, and never overrides a safety rule.
@@ -134,7 +137,7 @@ Sparring output is advisory thinking and belongs in chat, where the decision get
 ## Pairs with
 
 - A rejected-patterns / proven-patterns record, if the workspace keeps one - consulted inside the consistency check, so the spar never re-suggests a rejected idea or misses a proven one.
-- A periodic effectiveness review, if one exists - the weekly, results-over-time sibling. This skill is the per-task, real-time, decision-level one.
+- goals-review ("weekly review") - the weekly, results-over-time sibling. This skill is the per-task, real-time, decision-level one.
 - A domain quality-audit skill, where one exists - the editorial sibling. Spar handles strategy and outcome; the quality gate handles the words.
 - `session-audit` - the session-end partner. Sequence at close: the Sweep (this skill) runs before session-audit's saving steps, and its findings join that close; otherwise Sweep first, then a next-step prompt.
 

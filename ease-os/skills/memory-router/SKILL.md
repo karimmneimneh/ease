@@ -43,16 +43,18 @@ On activation, extract the thing to be remembered. Name it in one line before ro
 
 ## Step 2: Classify the content
 
-Classify the thing to be remembered against these four types. Pick one. (A skill the user has switched off counts as a rule or preference; route it with the row in Step 3.)
+Classify the thing to be remembered against these six types. Pick one. (A skill the user has switched off counts as a rule or preference; route it with the row in Step 3.)
 
 | Type | Description | Examples |
 |---|---|---|
 | **Voice / writing** | How to write - tone, word choice, banned phrases, sentence patterns, register | a voice or style correction, "shorter sentences in openings", a phrase to stop using |
 | **Identity / situation** | Who the user is, how they describe themselves, their current context | a change to how the user positions themselves, "current focus is [type of work]" |
-| **Rule or preference** | A working preference, operating rule, or approach - not specific to one project | "always ask one question not five", "deliver the finished work not suggestions" |
-| **Fact / decision / context** | Something that happened, was decided, or emerged in a specific project or workstation | a project status update, a new contact preference, a locked decision on one project |
+| **Reply or decision preference** | How Claude should reply or put decisions to the user | "always ask one question not five", "give me the answer first" |
+| **Checking rule** | How to make sure something is true before acting on it or calling it done | "check the live page, not my notes" |
+| **Rule or preference** | Any other working preference, operating rule or approach - not specific to one project | "deliver the finished work not suggestions", "keep all drafts in one folder" |
+| **Fact / decision / context** | Something that happened, was decided or emerged in a specific project or workstation | a project status update, a new contact preference, a locked decision on one project |
 
-If the type is unclear after one read, ask: "Is this a writing rule, a way you describe yourself, a working preference or a project-specific fact?" Wait for the answer before proceeding.
+If the type is unclear after one read, ask: "Is this a writing rule, a way you describe yourself, how I should reply, a check to make, a working preference or a project-specific fact?" Wait for the answer before proceeding.
 
 ---
 
@@ -65,7 +67,9 @@ Once the type is clear, apply this routing table. Pick the deepest layer it belo
 | Scope | Where to write |
 |---|---|
 | Voice / writing rule of any kind - global | `about-me/writing-rules.md` |
-| Identity / situation change - global | `about-me/about-me.md` |
+| How replies or decisions should work (length, format, when to ask) - global | `about-me/how-claude-works-with-me.md` |
+| A rule about checking something is true before acting on it - global | `about-me/verification-rules.md` |
+| Identity / situation change, or a change to a goal - global | `about-me/about-me.md` |
 | Rule or preference - applies across every workstation and project | `about-me/memory.md` |
 | Rule or preference - applies across all projects in one workstation | `workstations/<name>/memory.md` |
 | Fact / decision / context - applies only to one project | `projects/<name>/memory.md` |
@@ -79,8 +83,10 @@ Once the type is clear, apply this routing table. Pick the deepest layer it belo
 When the user corrects or confirms an approach during a session without saying "remember this", treat it as an inferred signal, not an instruction to write. Do not write it silently. Surface it in the moment ("Want me to save that? It would go to `[file]`.") and write only on a yes, or hand it to the session-audit skill to propose at the end of the session. The explicit triggers in Step 1 start the routing, and the entry is still written only after the user says yes to the exact words in Step 5; an inferred signal first needs a yes that it should be saved at all. Route an approved inferred signal the same way:
 
 - Writing correction or preference -> `about-me/writing-rules.md`
-- Change to how they describe themselves or their situation -> `about-me/about-me.md`
-- Project update, decision, or new context -> the relevant project's `memory.md`
+- Correction to how replies or decisions are handled -> `about-me/how-claude-works-with-me.md`
+- A lesson about checking before trusting -> `about-me/verification-rules.md`
+- Change to how they describe themselves, their situation or a goal -> `about-me/about-me.md`
+- Project update, decision or new context -> the relevant project's `memory.md`
 - Workstation-level rule -> that workstation's `memory.md`
 - New global preference -> `about-me/memory.md`
 
@@ -104,15 +110,19 @@ Before writing anything, state the routing decision in one line:
 
 Then ask: "Save this?" and wait. Write only on a clear yes to that entry. If the user edits the words, show the new version and ask again. If anything about the routing feels ambiguous, ask one short question first. Nothing is written until the user has said yes to both the file and the exact entry.
 
+**When the entry changes something the user pasted into Cowork's Global instructions** (a reply, decision, spelling or date choice that also appears in `about-me/global-instructions-copy.md`), show, beside the entry, the updated block in a code block with the paste steps (Settings, then Cowork, then Global instructions; replace the old block, keep everything else in the box). Then ask a separate question: "Also update the saved copy in `about-me/global-instructions-copy.md` once you have pasted it?" Update the copy only on that yes, after the user says they have pasted the block, backing the copy up first. If no copy exists, ask once whether a block from "make it mine" was pasted into Global instructions; if it was, show the updated lines with the same paste steps.
+
 ---
 
 ## Step 6: Write
 
 Before writing to a `memory.md`, count its lines against its ceiling (the `## Memory ceilings` section of root `CLAUDE.md`, or 50 / 150 / 200 by default). If the file is full (the kit's one test for "full": the file's line count plus the entry waiting to be saved would reach or pass its ceiling), do not write it yet: say so and show the exact approved entry in a copy block, then suggest "tidy my memory for [file]" and offer to save the entry straight after in this chat; the copy block means it survives even if the chat ends. When several entries or a new heading are going to the same file in one go, count them together: if the total would reach or pass the ceiling, save only those that fit and send the rest down the same "tidy my memory for [file]" path. Then write to the determined file(s). Follow the existing format and heading structure in the target file. Do not invent new sections - append under the most relevant existing heading, or add a new one only if none fits.
 
-**If the destination is a project that does not exist yet** (no `projects/[name]/` folder), do not create a bare `memory.md`: offer to start the project first with new-project-setup ("start a new project for [name]"), then save the entry into the memory file it creates. **If the destination file does not exist yet** in an existing folder, say so in one line, ask the user whether to create it, and on a yes create it with a simple heading (the file's name) and then append the entry. A new workspace has none of these files until the setup skill runs, so this is the normal case on day one, not an error. Never fail silently and never write the entry somewhere else instead.
+**If the destination is a project that does not exist yet** (no `projects/[name]/` folder), do not create a bare `memory.md`: offer to start the project first with new-project-setup ("start a new project for [name]"), then save the entry into the memory file it creates. **If the destination file does not exist yet** in an existing folder, say so in one line, ask the user whether to create it and on a yes create it with a simple heading (the file's name) and then append the entry. A new workspace has none of these files until the setup skill runs, so this is the normal case on day one, not an error. Never fail silently and never write the entry somewhere else instead.
 
-For `about-me/writing-rules.md`: append under the most relevant rule category.
+For `about-me/writing-rules.md`: append under the most relevant rule category. If it changes the spelling or date format and `about-me/global-instructions-copy.md` exists, see Step 5 for the Global instructions block.
+For `about-me/how-claude-works-with-me.md`: append a dated line under Your choices for a choice, or under Kit defaults for a new standing rule. Never rewrite an existing line. If the new line contradicts one already there, append it ending "(replaces '[first few words of the old line]', [date])" and leave the old line in place; to tidy the file, the user can say "make it mine". If `about-me/global-instructions-copy.md` exists and the change alters a line in it, see Step 5: the updated block and the copy are shown and approved separately.
+For `about-me/verification-rules.md`: append the new rule as the next numbered line, dated.
 For `about-me/about-me.md`: append a short dated entry under the closest existing heading (or a 'Recent updates' heading). Do NOT overwrite or rewrite any existing sentence or paragraph. If the new fact supersedes an old one, append the new dated entry and leave the old text in place. Never delete or replace the user's existing content.
 For `about-me/memory.md`: append a dated entry.
 For workstation or project `memory.md`: append a dated entry under the most relevant heading.
@@ -147,5 +157,5 @@ No further commentary needed.
 - Does not write before routing is resolved.
 - Does not duplicate across layers.
 - Does not write to Cowork's own built-in memory, or anywhere outside the workspace folder.
-- Does not rewrite, reorganise, or overwrite the target file. It only appends new entries; existing content is never changed or removed.
+- Does not rewrite, reorganise or overwrite the target file. It only appends new entries; existing content is never changed or removed. The one exception is `about-me/global-instructions-copy.md`, which it updates only on its own yes, after the user has pasted the new block, with a backup first.
 - Does not activate on casual references to memory (e.g. "I remember when...") - only on clear intent to persist something.

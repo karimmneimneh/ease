@@ -1,6 +1,6 @@
 ---
 name: consolidate-memory
-description: "Compresses a memory file that has grown past its soft ceiling, merging and summarising older entries WITHOUT losing any information, so the file stays lean. Use when the user says 'consolidate my memory', 'tidy my memory', 'my memory file is too long', 'compress my memory', 'my memory is over the limit' or 'clean up my memory'. Approval-gated: shows a clear before and after and waits for a yes. Archives, never deletes: original older entries are moved to a memory-archive.md in the same folder so nothing is ever lost. Never raises a ceiling."
+description: "Compresses a memory file that has grown past its soft ceiling, merging and summarising older entries WITHOUT losing any information, so the file stays lean. Use when the user says 'consolidate my memory', 'tidy my memory', 'tidy my memory for [file]', 'my memory file is too long', 'compress my memory', 'my memory is over the limit' or 'clean up my memory'. Approval-gated: shows a clear before and after and waits for a yes. Archives, never deletes: original older entries are moved to a memory-archive.md in the same folder so nothing is ever lost. Never raises a ceiling."
 ---
 
 # Consolidate Memory
@@ -18,7 +18,7 @@ Memory files have soft ceilings so they stay cheap to load every session. When a
 
 ## When to run
 
-- The user says "consolidate my memory", "tidy my memory", "my memory file is too long", "compress my memory", "my memory is over the limit", or "clean up my memory".
+- The user says "consolidate my memory", "tidy my memory", "my memory file is too long", "compress my memory", "my memory is over the limit" or "clean up my memory".
 - A specific file is named, or the user asks for a sweep of all memory files.
 
 If the user names no file, check all memory files (see Step 1). If they name one, scope to that one.
@@ -41,7 +41,7 @@ If the user's root `CLAUDE.md` states different ceilings, theirs win; read them 
 
 ## Step 1: Measure against the ceiling
 
-Measure line count, do not read content yet. Use `wc -l` on the in-scope memory file(s), counting only those that exist. If none of them does, say the workspace has no memory files yet, point the user at "optimise my workspace", and stop. For a full sweep, one command across `about-me/memory.md`, every `workstations/*/memory.md`, and every `projects/*/memory.md`; list them with `find about-me workstations projects -name memory.md -exec wc -l {} + 2>/dev/null` (quoting is handled and missing folders are ignored), never a bare glob, which fails on a workspace with no workstations yet.
+Measure line count, do not read content yet. Use `wc -l` on the in-scope memory file(s), counting only those that exist. If none of them does, say the workspace has no memory files yet, point the user at "optimise my workspace" and stop. For a full sweep, one command across `about-me/memory.md`, every `workstations/*/memory.md` and every `projects/*/memory.md`; list them with `find about-me workstations projects -name memory.md -exec wc -l {} + 2>/dev/null` (quoting is handled and missing folders are ignored), never a bare glob, which fails on a workspace with no workstations yet.
 
 - A file the user names ("tidy my memory for [file]") is always treated as full and tidied: every other skill in the kit names the file when it sends the user here, so a hand-off never ends in "nothing to do". On a general sweep with no file named, a file is full when the file's line count plus the entry waiting to be saved would reach or pass its ceiling (the kit's one test for "full"), or, with nothing waiting, when it is at or over its ceiling. If no file is full, say so in one line ("All memory files have room, nothing to consolidate") and stop. Do not compress a file that does not need it.
 - For each full file, note how many lines need to come out to leave room under the ceiling for the next few entries. That number is the target.
@@ -102,7 +102,7 @@ Confirm in one line per file:
 about-me/memory.md: compressed 58 -> 41 lines (ceiling 50). 12 older entries preserved in about-me/memory-archive.md.
 ```
 
-State plainly that the originals are intact in the archive. Provide `computer://` links to the consolidated file and its archive. If the user came here with entries waiting to be saved, show them and offer to save them now through memory-router's usual show-and-yes. If an entry came from the inbox, do not save it here: tell the user to say "triage my inbox", so the item is archived and taken out of the inbox in the usual order rather than saved twice. Then stop.
+State plainly that the originals are intact in the archive. Provide `computer://` links (where the app supports them) to the consolidated file and its archive. If the user came here with entries waiting to be saved, show them and offer to save them now through memory-router's usual show-and-yes. If an entry came from the inbox, do not save it here: tell the user to say "triage my inbox", so the item is archived and taken out of the inbox in the usual order rather than saved twice. Then stop.
 
 ---
 
