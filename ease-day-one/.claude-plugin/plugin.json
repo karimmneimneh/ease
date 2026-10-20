@@ -1,7 +1,7 @@
 {
   "name": "ease-day-one",
   "displayName": "EASE Day One",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "description": "A from-zero setup guide for complete beginners on Claude Cowork. It takes you from just installed to a safe, working setup and one real result, then hands you on to the EASE OS plugin. It uses Claude's own onboarding to install and connect your tools, then adds the safety habits it does not cover: manual approvals, draft-not-send and one tightly scoped folder. It checks what you already have and never resets anything. Install, then say 'help me set up Cowork safely'.",
   "author": {
     "name": "Karim Mneimneh",
