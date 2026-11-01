@@ -94,9 +94,9 @@ Then proceed through Steps 5 and 6 (confirm routing, then write). Never skip the
 
 ---
 
-## Step 4: Leave Cowork's own memory alone
+## Step 4: Leave Claude's own memory alone
 
-Cowork has its own built-in memory, which lives outside the workspace folder. This skill never writes to it. The workspace files above are the single home for everything the user asks to keep, so nothing is ever saved twice and nothing is written outside their folder. If Cowork's own memory picks something up by itself, that is Cowork's feature, not this kit's, and the file layer stays the source of truth.
+Claude has its own built-in memory, which lives outside the workspace folder. This skill never writes to it. The workspace files above are the single home for everything the user asks to keep, so nothing is ever saved twice and nothing is written outside their folder. If Claude's own memory picks something up by itself, that is Claude's feature, not this kit's, and the file layer stays the source of truth.
 
 ---
 
@@ -108,9 +108,11 @@ Before writing anything, state the routing decision in one line:
 
 **Show the exact entry underneath it, as it will appear in the file**, not a summary of it. The user approves the words that land on disk, never a description of them.
 
+Before asking, search the target file for a line the new entry already covers, makes broader or contradicts. If one says the same thing, say where and offer to skip the save. If the new entry is broader or contradicts it, end the new entry "(replaces '[first few words of the old line]', [date])" and show both lines. This is the one replaces rule for every file. The old line always stays in place; the user can tidy it later by editing the file or, for `about-me/how-claude-works-with-me.md`, by saying "make it mine".
+
 Then ask: "Save this?" and wait. Write only on a clear yes to that entry. If the user edits the words, show the new version and ask again. If anything about the routing feels ambiguous, ask one short question first. Nothing is written until the user has said yes to both the file and the exact entry.
 
-**When the entry changes something the user pasted into Cowork's Global instructions** (a reply, decision, spelling or date choice that also appears in `about-me/global-instructions-copy.md`), show, beside the entry, the updated block in a code block with the paste steps (Settings, then Cowork, then Global instructions; replace the old block, keep everything else in the box). Then ask a separate question: "Also update the saved copy in `about-me/global-instructions-copy.md` once you have pasted it?" Update the copy only on that yes, after the user says they have pasted the block, backing the copy up first. If no copy exists, ask once whether a block from "make it mine" was pasted into Global instructions; if it was, show the updated lines with the same paste steps.
+**When the entry changes something the user pasted into their Instructions for Claude** (a reply, decision, spelling or date choice that also appears in `about-me/global-instructions-copy.md`), show, beside the entry, the updated block in a code block with the paste steps (Settings, then Account, then Instructions for Claude; replace the old block, keep everything else in the box). Then ask a separate question: "Also update the saved copy in `about-me/global-instructions-copy.md` once you have pasted it?" Update the copy only on that yes, after the user says they have pasted the block, backing the copy up first. If no copy exists, ask once whether a block from "make it mine" was pasted into Instructions for Claude; if it was, show the updated lines with the same paste steps.
 
 ---
 
@@ -120,8 +122,8 @@ Before writing to a `memory.md`, count its lines against its ceiling (the `## Me
 
 **If the destination is a project that does not exist yet** (no `projects/[name]/` folder), do not create a bare `memory.md`: offer to start the project first with new-project-setup ("start a new project for [name]"), then save the entry into the memory file it creates. **If the destination file does not exist yet** in an existing folder, say so in one line, ask the user whether to create it and on a yes create it with a simple heading (the file's name) and then append the entry. A new workspace has none of these files until the setup skill runs, so this is the normal case on day one, not an error. Never fail silently and never write the entry somewhere else instead.
 
-For `about-me/writing-rules.md`: append under the most relevant rule category. If it changes the spelling or date format and `about-me/global-instructions-copy.md` exists, see Step 5 for the Global instructions block.
-For `about-me/how-claude-works-with-me.md`: append a dated line under Your choices for a choice, or under Kit defaults for a new standing rule. Never rewrite an existing line. If the new line contradicts one already there, append it ending "(replaces '[first few words of the old line]', [date])" and leave the old line in place; to tidy the file, the user can say "make it mine". If `about-me/global-instructions-copy.md` exists and the change alters a line in it, see Step 5: the updated block and the copy are shown and approved separately.
+For `about-me/writing-rules.md`: append under the most relevant rule category. If it changes the spelling or date format and `about-me/global-instructions-copy.md` exists, see Step 5 for the Instructions for Claude block.
+For `about-me/how-claude-works-with-me.md`: append a dated line under Your choices for a choice, or under Kit defaults for a new standing rule. Never rewrite an existing line. If the new line is broader than one already there or contradicts it, apply the replaces rule from Step 5 and leave the old line in place; to tidy the file, the user can say "make it mine". If `about-me/global-instructions-copy.md` exists and the change alters a line in it, see Step 5: the updated block and the copy are shown and approved separately.
 For `about-me/verification-rules.md`: append the new rule as the next numbered line, dated.
 For `about-me/about-me.md`: append a short dated entry under the closest existing heading (or a 'Recent updates' heading). Do NOT overwrite or rewrite any existing sentence or paragraph. If the new fact supersedes an old one, append the new dated entry and leave the old text in place. Never delete or replace the user's existing content.
 For `about-me/memory.md`: append a dated entry.
@@ -156,6 +158,6 @@ No further commentary needed.
 
 - Does not write before routing is resolved.
 - Does not duplicate across layers.
-- Does not write to Cowork's own built-in memory, or anywhere outside the workspace folder.
+- Does not write to Claude's own built-in memory, or anywhere outside the workspace folder.
 - Does not rewrite, reorganise or overwrite the target file. It only appends new entries; existing content is never changed or removed. The one exception is `about-me/global-instructions-copy.md`, which it updates only on its own yes, after the user has pasted the new block, with a backup first.
 - Does not activate on casual references to memory (e.g. "I remember when...") - only on clear intent to persist something.

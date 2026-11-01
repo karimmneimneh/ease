@@ -13,9 +13,9 @@ Keep this specific to the workspace and the kit, so it does not fire on unrelate
 
 ## Step 1: Explain what the kit is for
 
-Open with the version in one line, "You are on EASE OS 13.0.0", so any help request starts from the right version. Then one or two plain lines. The kit runs the workspace itself: it keeps things tidy, manages memory across sessions, sets up projects, sorts captured thoughts, fits itself to the user's goals and preferences and keeps learning them over time. It is the operating layer for a Cowork workspace, not a set of one-off content tools. The name carries the four habits it keeps: Everything has a home, Ask before acting, Save before you replace, End each session with a debrief ("audit this session").
+Open with the version in one line, "You are on EASE OS 13.1.0", so any help request starts from the right version. Then one or two plain lines. The kit runs the workspace itself: it keeps things tidy, manages memory across sessions, sets up projects, sorts captured thoughts, fits itself to the user's goals and preferences and keeps learning them over time. It is the operating layer for a Claude workspace, not a set of one-off content tools. The name carries the four habits it keeps: Everything has a home, Ask before acting, Save before you replace, End each session with a debrief ("audit this session").
 
-Then set expectations in one more line: it does not do the user's work for them (it will not write their emails or build their slides; "sharpen this" only raises the bar on a piece of work they ask it to), and nothing flashy happens on day one; it runs quietly in the background and pays off more the more real work they do in Cowork.
+Then set expectations in one more line: it does not do the user's work for them (it will not write their emails or build their slides; "sharpen this" only raises the bar on a piece of work they ask it to), and nothing flashy happens on day one; it runs quietly in the background and pays off more the more real work they do in Claude.
 
 ---
 
@@ -35,8 +35,8 @@ Present this as a simple table. Each row: the skill, what it does in one line an
 | `session-audit` | At session end, lists anything left unfinished, then catches corrections and decisions from the conversation and proposes saving them | "audit this session" |
 | `session-checkpoint` | Saves an unfinished session as one small checkpoint file and a resume prompt, so a fresh chat carries on where this one stopped | "pause this", "resume [thread]" |
 | `consolidate-memory` | Compresses a memory file that is over its ceiling, archiving the originals so nothing is lost | "tidy my memory" |
-| `personalise` | Makes the workspace yours: a short interview that records who you are, your goals, how you want replies and decisions and how you like things written, then drafts a block for Cowork's Global instructions | "make it mine" |
-| `output-sharpen` | Sets a scoring bar for one piece of work before drafting, then scores and revises it until it clears the bar | "sharpen this" |
+| `personalise` | Makes the workspace yours: a short interview that records who you are, your goals, how you want replies and decisions and how you like things written, then drafts a block for your Instructions for Claude | "make it mine" |
+| `output-sharpen` | Sets a scoring bar for one piece of work before drafting, then scores and revises it until it clears the bar or says what is missing | "sharpen this" |
 | `skill-builder` | Turns something you keep doing the same way into a skill of your own, ready to upload | "turn this into a skill" |
 | `goals-review` | A weekly check of your effort against your goals, ending in a few decisions | "weekly review" |
 | `orientation` | This tour | "what does the EASE OS plugin do" |
@@ -53,7 +53,7 @@ Lay out the fastest path to a working setup (one line first, then three steps):
 
 0. **Use one folder.** EASE OS lives in the folder the user works in, so they should select that same folder as the working folder whenever they start a chat; otherwise what it set up and remembered is not there.
 1. **Run "optimise my workspace".** This compares the kit against whatever the user already has, preserves everything that is theirs and proposes only what is missing, for their approval.
-2. **Make it yours: say "make it mine".** A short interview, every question skippable, records who the user is, their goals, how they want replies and decisions and how they like things written, then drafts a block for Cowork's Global instructions so the essentials apply in every chat. Setup offers it at the end of its first run.
+2. **Make it yours: say "make it mine".** A short interview, every question skippable, records who the user is, their goals, how they want replies and decisions and how they like things written, then drafts a block for their Instructions for Claude so the essentials apply in every chat. Setup offers it at the end of its first run.
 3. **Do one real piece of work.** A plan, a draft, some research: whatever the user actually needs, saying "remember this" when something matters. The payoff builds from here.
 
 Mention three habits for later: "weekly review" once a week to check the work against their goals, "turn this into a skill" when they notice themselves doing the same thing again and "audit my workspace" as the full health check worth running now and then (it reports first and changes nothing without the user's yes on each fix).

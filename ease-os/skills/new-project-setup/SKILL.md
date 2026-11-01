@@ -1,13 +1,13 @@
 ---
 name: new-project-setup
-description: "Scaffolds a new project folder pair in the Cowork workspace. Use when the user says 'start a new project for [name]', 'create a new project for [name]', 'start a new project called [X]', 'set up project [Y]', 'I want to track work on [Z]' or describes a new piece of work that doesn't fit any existing project. Creates matching folders in projects/[name]/ and outputs/[name]/, generates a blank CLAUDE.md and memory.md and asks which workstation it belongs to, showing what it will create before creating it. It also adds a row to up to three files the user already has (their root CLAUDE.md routing map, about-me/memory.md and the workstation's memory.md), showing each row and waiting for a yes before writing it. Follows the structure rules in root CLAUDE.md."
+description: "Scaffolds a new project folder pair in the Claude workspace. Use when the user says 'start a new project for [name]', 'create a new project for [name]', 'start a new project called [X]', 'set up project [Y]', 'I want to track work on [Z]' or describes a new piece of work that doesn't fit any existing project. Creates matching folders in projects/[name]/ and outputs/[name]/, generates a blank CLAUDE.md and memory.md and asks which workstation it belongs to, showing what it will create before creating it. It also adds a row to up to three files the user already has (their root CLAUDE.md routing map, about-me/memory.md and the workstation's memory.md), showing each row and waiting for a yes before writing it. Follows the structure rules in root CLAUDE.md."
 ---
 
 # New Project Setup
 
 **Working folder check (before any write).** EASE OS lives in the user's working folder. If a file this skill would write to is missing, first check that this chat has a working folder selected and that it is the one EASE OS was set up in (it holds `about-me/` and a root `CLAUDE.md`). If no folder is selected, or the selected one has neither, ask the user to select the folder they set this kit up in (the one holding `about-me/` and `CLAUDE.md`) before offering to create anything, so nothing is written somewhere that will not be there next chat. Only if they confirm this is the right folder does the skill's own missing-file rule apply.
 
-One-shot scaffold for a new project in the Cowork workspace. Creates the folder pair and the blank files, and ties the project into the right workstation.
+One-shot scaffold for a new project in the Claude workspace. Creates the folder pair and the blank files, and ties the project into the right workstation.
 
 ---
 

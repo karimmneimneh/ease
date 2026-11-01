@@ -23,6 +23,8 @@ If a file is missing, carry on without it and do not invent its contents.
 
 **Hand off first.** If another installed skill already owns this kind of output with its own quality check, say so in one line and use that skill instead. This skill is for work with no dedicated home.
 
+**Check or rebuild.** When the user asks to double check existing work, ask once whether they want it checked and fixed or rebuilt. A check never quietly becomes a rebuild.
+
 **Set the stakes.** Anything the user will send, publish or act on is high stakes and gets the critic pass as a separate helper (a sub-agent) where one is available. Anything else runs the critic pass in the same chat, with an explicit switch of role. When unsure, treat it as high stakes.
 
 ---
@@ -31,7 +33,7 @@ If a file is missing, carry on without it and do not invent its contents.
 
 Run the loop in this order. Do not reorder steps 1 to 3: locking the bar before the draft exists is what stops the rubric being gamed.
 
-**1. Lock the rubric (before any drafting).**
+**1. Lock the rubric (before any drafting).** For existing work, lock the rubric before reading the work for faults.
 - Four to six criteria specific to THIS task, never generic boilerplate. Weight them when some matter more than others.
 - Each criterion carries a failure mode written as "fails if...". Failure modes separate good from bad better than positive descriptions.
 - Anchor the scale: one line on what a 9 to 10 looks like and one on what a 6 looks like, so a score means something.
@@ -43,18 +45,19 @@ Show the rubric to the user in a few lines before drafting, so they can change t
 
 **2. Draft** the output against the brief and the rubric.
 
-**3. Score in a separate critic pass.** Switch into an evaluator whose job is to find the weakest criterion, not to confirm the draft. Score each criterion from 1 to 10 with one line of evidence quoted from the draft. No score without a specific reason. For a message to a specific person, also read it cold as that person and list every point of confusion, open question or step they could not take.
+**3. Score in a separate critic pass.** Switch into an evaluator whose job is to find the weakest criterion, not to confirm the draft. Score each criterion from 1 to 10 with one line of evidence quoted from the draft. No score without a specific reason. The critic gets only the work as it will be used, the rubric and the sources: never Claude's reasoning, its list of changes or earlier scores. A critic pass in the same chat cannot fully forget Claude's reasoning, so treat it as best effort and use a separate helper whenever one is available. For a message to a specific person, also read it cold as that person and list every point of confusion, open question or step they could not take.
 
-**4. Revise** to close the lowest-scoring gaps first. Re-score only what changed.
+**4. Revise** to close the lowest-scoring gaps first. A revision that changes what the work commits to, or what the user is deciding, is asked first. When improving existing work, revise a copy in chat (or in `outputs/`, on a yes); the original stays untouched. Replacing the original at its own path needs its own yes, after a dated backup (`[file].backup-[today's date]`, adding the time if that name is taken). Then re-score the whole revised version with a fresh critic (a new helper, or a fresh switch of role if no helper is available), never the earlier one.
 
-**5. Stop** when every criterion scores 8 or more and every gate passes. If two passes in a row bring no real improvement before that, stop and follow the "Scores stall below the bar" edge case below; never call the work finished below the bar.
+**5. Stop** when every criterion scores 8 or more, every gate passes and the last round found nothing new and important. Any edit after the last score means another round. After three revise rounds, or two in a row that bring no real improvement, anything still open means the work is Not ready: follow the "Scores stall below the bar" edge case below; never call the work finished below the bar.
 
 ---
 
 ## Deliver
 
-- The finished output, ready to use. Anything the user will copy goes in a code block.
-- A short scorecard underneath: each criterion, its final score and the one change that moved it most.
+- Open with Ready or Not ready. When Not ready, say which criterion is stuck and what input is missing, and label the output a draft.
+- The output, ready to use when Ready. Anything the user will copy goes in a code block.
+- A short scorecard underneath: each criterion, its final score and the one change that moved it most. Scores are those the last critic gave the final version, never projected.
 - The locked rubric, offered as a block the user can keep for similar tasks.
 - The result stays in chat by default. When the output is a long document or something the user will come back to, offer to save it, name the path in `outputs/` and write only on a yes; an existing file is backed up first (`[file].backup-[today's date]`, adding the time if that name is taken).
 
@@ -65,6 +68,7 @@ Show the rubric to the user in a few lines before drafting, so they can change t
 - **The task is a prompt the user will run somewhere else.** The deliverable is the sharpened prompt: build the rubric, write the prompt, score it in a separate pass, revise. Same loop.
 - **The task is too vague for clear criteria.** Ask one scoping question before building the rubric, not five.
 - **Scores stall below the bar.** Name the criterion that is stuck and what is missing (usually a fact, a source or a decision only the user has) rather than raising the score.
+- **The user changes the brief mid-run.** Re-lock the rubric and start again; earlier scores no longer count.
 - **The first score looks suspiciously high.** Treat it as a sign of a rubric that is too easy. Raise the bar or add a failure mode and score again.
 
 ---

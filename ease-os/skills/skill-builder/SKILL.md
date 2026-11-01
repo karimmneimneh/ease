@@ -13,8 +13,8 @@ A skill is a written method Claude follows whenever a phrase calls for it. This 
 
 1. **Show, then save.** Every file is shown in full and written only on a yes. If the user edits it, show the new version and ask again.
 2. **Never overwrite.** Before replacing any file, back it up. For a file inside `outputs/skills/[skill-name]/`, and for its `.zip`, the backup goes to `outputs/skills/backups/[skill-name]/[file].backup-[today's date]`, outside the skill's folder so it never ends up inside the upload zip. Every other file (a data file, `about-me/custom-workflows.md`) is backed up beside itself as `[file].backup-[today's date]`, like everywhere else in the kit. If a backup name is taken, add the time, `[file].backup-[date]-[HHMM]`; never overwrite a backup.
-3. **The user installs, not this skill.** Installing a skill happens in Cowork's own screens. This skill prepares everything and gives the steps; it never claims a skill is installed.
-4. **Safe by design.** Every skill this builds must itself show before it writes, never send or post without the user's yes, never delete what the user wrote, back up any file before replacing it and create scheduled tasks that only remind. Bake those lines into every draft (Step 4).
+3. **The user installs, not this skill.** Installing a skill happens in Claude's own screens. This skill prepares everything and gives the steps; it never claims a skill is installed.
+4. **Safe by design.** Every skill this builds must itself show before it writes, never send or post without the user's yes, never delete what the user wrote, back up any file before replacing it and create scheduled tasks that only remind, using the fixed reminder line in the Step 4 Safety template. Bake those lines into every draft (Step 4).
 
 ---
 
@@ -88,7 +88,7 @@ description: "[What it does in one sentence]. Use when the user says '[phrase 1]
 - Never send, post or publish anything; drafts only.
 - Never delete anything the user wrote.
 - Back up any file before replacing it, as `[file].backup-[date]` (add the time if that name exists; never overwrite a backup).
-- A scheduled task it creates may only remind; it never edits, pauses or deletes an existing task.
+- A scheduled task it creates may only remind: its full instructions are `Tell the user: [...]. Do nothing else: read no files and ask no questions.`, shown in full and created only on its own yes, never in a batch. It never edits, pauses or deletes an existing task.
 
 ## What this skill does not do
 - ...
@@ -116,7 +116,7 @@ Show the full `SKILL.md`, then the data file. On a yes to each:
 
 Give the user the steps, because only they can install a skill:
 
-1. In Cowork, open Customize in the left menu, then Skills.
+1. In Claude, open Customize in the left menu, then Skills.
 2. Click "+", then "+ Create skill", then "Upload a skill".
 3. Choose `outputs/skills/[skill-name].zip`.
 4. Open a new chat, select the same working folder and type one of the skill's phrases. You will know it worked when Claude says it is using the skill.

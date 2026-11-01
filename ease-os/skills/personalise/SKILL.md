@@ -1,6 +1,6 @@
 ---
 name: personalise
-description: "Makes the EASE OS workspace the user's own through a short interview, one question at a time and every question skippable, then saves their answers into the files Claude reads at the start of every session: who they are, their goals and areas of work, how Claude should reply and handle decisions, how they like things written and which checks to keep. Proposes skill ideas from the tasks they repeat and ends with a ready-to-paste block for Cowork's Global instructions. Use when the user says 'make it mine', 'personalise my workspace', 'personalize my workspace', 'set up how you work with me', 'update my profile', 'change how you reply to me' or when ease-setup offers it. Re-runnable: a later run changes only what the user picks. Writes only the user's own words, shows every change before saving, backs up anything it replaces and never sends, posts or deletes anything."
+description: "Makes the EASE OS workspace the user's own through a short interview, one question at a time and every question skippable, then saves their answers into the files Claude reads at the start of every session: who they are, their goals and areas of work, how Claude should reply and handle decisions, how they like things written and which checks to keep. Proposes skill ideas from the tasks they repeat and ends with a ready-to-paste block for the user's Instructions for Claude. Use when the user says 'make it mine', 'personalise my workspace', 'personalize my workspace', 'set up how you work with me', 'update my profile', 'change how you reply to me' or when ease-setup offers it. Re-runnable: a later run changes only what the user picks. Writes only the user's own words, shows every change before saving, backs up anything it replaces and never sends, posts or deletes anything."
 ---
 
 # Personalise ("make it mine")
@@ -17,7 +17,7 @@ The kit ships a structure. This skill fills it with the user, so every later ses
 4. **Merge, never rebuild.** Start from each file's current text. Change only the lines this run's answers fill: a placeholder line (one containing `_(`) or a section the user chose to change. Keep every other heading and line exactly as it is, including anything the user wrote that the template does not have.
 5. **Show, then save.** Before writing, show what changes, then the full file, and ask "Save this?". Write only on a yes. If the user edits the words, show the new version and ask again.
 6. **Back up before replacing.** Filling a line replaces text, so first copy the file to `[file].backup-[today's date]` (if a backup of that name already exists, add the time, `[file].backup-[date]-[HHMM]`; never overwrite an existing backup) and never remove the backup. On a first run the file being replaced is the blank template written minutes earlier, so say in one line that the backup is a copy of the blank template and can be ignored.
-7. **Nothing outside the folder.** This skill writes only inside the working folder. Cowork's Global instructions and Project instructions are screens only the user can edit: it drafts the text and never claims it is done.
+7. **Nothing outside the folder.** This skill writes only inside the working folder. The user's Instructions for Claude and Project instructions are screens only the user can edit: it drafts the text and never claims it is done.
 
 ---
 
@@ -62,7 +62,7 @@ The weekly review (the goals-review skill) measures against these, so they are w
 8. How long should replies be? (Short: the answer and the next step / Medium: the answer with a little context / Detailed: full reasoning.)
 9. When you need to make a decision, how should it reach you? (A multiple-choice question with Claude's recommendation first / One clear recommendation to accept or reject / The options side by side.)
 10. For small choices inside a task (wording, layout, which order to do things in), should Claude make the call and tell you, or ask you? (Ask me / Make the call and tell me.) Either way, anything that changes a file, sends, publishes or deletes still needs your yes.
-11. Then show the Kit defaults list in that file, one line each, and ask which to keep, change or delete. Lines they keep stay, with any wording they change. Mark any line that is not from the kit template as theirs. A line is removed only if they pick delete, and the file is backed up first.
+11. Then show the Kit defaults list in that file, one line each, and ask which to keep, change or delete. Lines they keep stay, with any wording they change. Mark any line that is not from the kit template as theirs. A kit line is removed only if they pick delete, and the file is backed up first. A line marked as theirs is never removed by the kit: offer to add "(retired [date])" to it instead, and tell them they can delete it themselves if they want it gone.
 
 **Round 4 - How you like things written** (goes to `about-me/writing-rules.md`)
 12. Three or four words for the tone you want (for example plain, warm, direct).
@@ -90,7 +90,7 @@ If `about-me.md` has no Goals or Areas of work section (older setups), show the 
 
 ## Step 4 - Make it apply in every chat
 
-Files in the folder are read when that folder is selected. To make the essentials apply in every Cowork chat, they need to sit in Cowork's Global instructions, a screen only the user can edit.
+Files in the folder are read when that folder is selected. To make the essentials apply in every Claude chat, they need to sit in the user's Instructions for Claude, a screen only the user can edit.
 
 1. Draft the block from their answers in this shape. The first two lines are the kit's fixed safety lines, the same words EASE Day One uses; the rest come only from their answers, and a line whose answer they skipped is left out:
 
@@ -104,11 +104,11 @@ Replies: [their length choice]. Decisions: [their decision choice].
 
 2. Show the block in a code block so it can be copied, then give the steps:
    1. Open the Claude desktop app.
-   2. Go to Settings, then Cowork, then Global instructions.
+   2. Go to Settings, then Account, then Instructions for Claude.
    3. Add the block. Keep everything else already in the box; if it holds the two safety lines from EASE Day One, remove only those two, because the block repeats them word for word.
    4. Save. You will know it worked when a new chat follows your reply preferences without being told.
 
-3. If the user uses Cowork Projects for parts of their work, offer the third line of the block for each Project's own instructions too (in the Project's panel), so a Project chat also reads the workspace.
+3. If the user uses Claude Projects for parts of their work, offer the third line of the block for each Project's own instructions too (in the Project's panel), so a Project chat also reads the workspace.
 
 4. Offer to keep a copy in `about-me/global-instructions-copy.md` (a file sessions do not read at start, so the text does not load twice), with a heading, the date and the block. Then when a reply or spelling choice changes later, the change can be shown against what was pasted. Show the file and save it on a yes, with the backup rule if it exists.
 
@@ -118,7 +118,7 @@ Ask the user to say when they have pasted it. Never say it is done until they co
 
 ## Step 5 - Close
 
-Give a short report: which files were saved, which were left as they were and whether the Global instructions block was pasted. Then one next step: bring a real piece of work, and say "remember this" when something matters. Mention two phrases for later: "make it mine" to change any of this, and "weekly review" to check progress against the goals they just set.
+Give a short report: which files were saved, which were left as they were and whether the Instructions for Claude block was pasted. Then one next step: bring a real piece of work, and say "remember this" when something matters. Mention two phrases for later: "make it mine" to change any of this, and "weekly review" to check progress against the goals they just set.
 
 ---
 
@@ -127,10 +127,10 @@ Give a short report: which files were saved, which were left as they were and wh
 - Does not invent facts, goals, preferences or a style. Every saved line is something the user said, chose or kept.
 - Does not rebuild a file: it changes only the lines this run fills and keeps everything else exactly as it is.
 - Does not save anything without showing the change first, and backs up any file before replacing its text.
-- Does not create the workspace files; ease-setup does ("optimise my workspace").
-- Does not edit Cowork's settings, Global instructions or Project instructions. It drafts the text and gives the steps.
+- Does not create the workspace files; ease-setup does ("optimise my workspace"). The one file it may create is the optional `about-me/global-instructions-copy.md`, on a yes.
+- Does not edit Claude's settings, Instructions for Claude or Project instructions. It drafts the text and gives the steps.
 - Does not create projects, skills or scheduled tasks. It proposes them and names the skill that does each.
-- Does not send, post, publish or delete anything.
+- Does not send, post, publish or delete anything the user wrote. The only line it removes is a kit default the user picks delete for, after a backup.
 
 ---
 

@@ -76,7 +76,7 @@ Most paused threads finish outside a resume: the user sends the message themselv
 | A file whose Status says closed, still in the folder or under `## Open` | Close it (RESUME § Closing a thread) |
 | An Open row that points at no file | Search the working folder for the file name. Found elsewhere: propose moving it back. Truly gone: propose moving the row to `## Closed` with the File cell set to `file missing YYYY-MM-DD`. Never delete the row |
 | An open file with no row | Propose a row built from the file's own fields |
-| Open for more than 14 days, measured from the oldest `## Pause history` line | Ask whether to close it, keep it or re-scope it |
+| Open for more than 14 days, measured from the oldest `## Pause history` line, or from the latest `reopened` line if there is one | Ask whether to close it, keep it or re-scope it |
 | Paused four times or more | The same question. A thread paused that often is not paused; it is blocked on something its checkpoint should name |
 
 Say the result in one line, including when it is clean. If the folder does not exist yet, say "no checkpoints yet" and carry on. If checkpoints exist but `00-index.md` does not, see § Edge cases. **If the index exists but cannot be read or does not have the two sections, say so in one line: that is an unknown, never a clean result.** Propose fixes as one numbered list and apply only the ones the user says yes to, under the change rule above.
@@ -132,12 +132,12 @@ Before showing anything, confirm in one line that each of the ten items in Step 
 
 ## Step 5: Show it, then write it on a yes
 
-**First, settle which file this is.** Look for `[thread-slug].md` in `outputs/checkpoints/` and in `_closed/`. If it exists and this chat did not come in through RESUME of that thread, ask whether it is the same thread: in `outputs/checkpoints/` that makes it a re-pause (below), and in `_closed/` it goes to RESUME § Reopening. If it is a different thread, choose a different slug. Never write over a checkpoint because the names matched.
+**First, settle which file this is.** Look for `[thread-slug].md` in `outputs/checkpoints/`, and for `[thread-slug]*.md` in `_closed/` (a closed file may carry a date in its name). If it exists and this chat did not come in through RESUME of that thread, ask whether it is the same thread: in `outputs/checkpoints/` that makes it a re-pause (below), and in `_closed/` it goes to RESUME § Reopening, then continues as another pause. If it is a different thread, choose a different slug. Never write over a checkpoint because the names matched.
 
 Show the whole checkpoint in a code block, the index row it adds or changes (with the before and after for a change) and the resume prompt (Step 6). Write nothing until the user says yes.
 
 - **First pause of a thread:** create the file from the template below, with one `## Pause history` line for this pause, and add its row under `## Open` (the index is backed up first, under the change rule in § Where things live).
-- **Another pause of the same thread:** read the file as it is now (the user or another chat may have changed it since this chat last saw it) and back it up, then **rewrite** it from the template, keeping its lines unless this chat has superseded them and showing the user anything the rewrite would drop. Never append. One of each heading and one next action; this pause adds one line to `## Pause history`; earlier decisions and rejections merge into the live lists, and superseded ones are removed. Pause count is the file's own count plus one. Status is a state (`open`, or `closed YYYY-MM-DD`), not a story. A file over about 10 KB has been appended to rather than rewritten: compress it again. Update the row's Paused and Next action cells under the change rule.
+- **Another pause of the same thread:** read the file as it is now (the user or another chat may have changed it since this chat last saw it) and back it up, then **rewrite** it from the template, keeping its lines unless this chat has superseded them and showing the user anything the rewrite would drop. Never append. One of each heading and one next action; this pause adds one line to `## Pause history`; earlier decisions and rejections merge into the live lists, and superseded ones this skill wrote are removed; a line the user typed into the checkpoint is kept and marked "(superseded [date])". Pause count is the file's own count plus one. Status is a state (`open`, or `closed YYYY-MM-DD`), not a story. A file over about 10 KB has been appended to rather than rewritten: compress it again. Update the row's Paused and Next action cells under the change rule.
 - **A closed thread that is being picked up again:** RESUME § Reopening.
 
 Then read the file back from the working folder to confirm it is there. If it could not be written, say so plainly and do not hand over a resume prompt that points at it.
@@ -185,7 +185,7 @@ Then continue at the next action. A resumed chat that stops again without finish
 
 **Closing a thread.** When the work is finished, propose the close in one approval, showing each change: Status set to `closed YYYY-MM-DD`, the file moved to `_closed/` (if `_closed/` already holds that name, add the date to the moved file's name) and its row moved to `## Closed` with the File cell updated to the new path. The file and the index are backed up first under the change rule in § Where things live. All of it on one yes. Any chat that finishes the work a checkpoint names should propose this; session-audit lists such threads at the close, and Step 0 and LIST catch the rest.
 
-**Reopening.** To pick up a closed thread, propose moving the file back from `_closed/` under its original slug (if an open file already holds that name, ask first), setting Status to `open` and moving its row back to `## Open`, on one yes, with the same backups first. Then resume as normal.
+**Reopening.** To pick up a closed thread, propose moving the file back from `_closed/` under its original slug (if an open file already holds that name, ask whether to carry on in that open thread instead or give the reopened one a new slug), setting Status to `open` and moving its row back to `## Open`, with the same backups first, and add a line to `## Pause history`: `reopened YYYY-MM-DD`. If the reopen started from a pause (Step 5 found the slug in `_closed/`), show the reopen and the new pause (Step 5's rewrite) together and apply both on one yes, with no freshness check; a no leaves the thread closed. Otherwise propose the reopen on one yes, then resume as normal.
 
 ---
 

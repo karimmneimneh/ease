@@ -1,6 +1,6 @@
 ---
 name: workspace-hygiene
-description: "Runs a systems-architect hygiene audit of the user's full Cowork workspace, or of one named project. Use when the user says 'audit my workspace', 'hygiene check', 'clean up my files', 'workspace audit', 'system architect review', 'find redundancies' or wants a structural review of files, memory, routing, dashboards or state files and scheduled tasks. Also reads what scheduled-task instructions say and reports any that have gone stale, without changing them. Not for first-time or repeat setup, which belongs to the ease-setup skill: that one adds what is missing, this one audits what is already there. Produces a severity-ranked report at outputs/system-audits/hygiene-audit-YYYY-MM-DD.md, asks about each high and medium finding and proposes low-risk fixes for approval. Also restores a file from its backup or from `_archive/` on 'restore [file] from its backup' or 'move [file] back from the archive'. Different from session-audit (which is end-of-session)."
+description: "Runs a systems-architect hygiene audit of the user's full Claude workspace, or of one named project. Use when the user says 'audit my workspace', 'hygiene check', 'clean up my files', 'workspace audit', 'system architect review', 'find redundancies' or wants a structural review of files, memory, routing, dashboards or state files and scheduled tasks. Also reads what scheduled-task instructions say and reports any that have gone stale, without changing them. Not for first-time or repeat setup, which belongs to the ease-setup skill: that one adds what is missing, this one audits what is already there. Produces a severity-ranked report at outputs/system-audits/hygiene-audit-YYYY-MM-DD.md, asks about each high and medium finding and proposes low-risk fixes for approval. Also restores a file from its backup or from `_archive/` on 'restore [file] from its backup' or 'move [file] back from the archive'. Different from session-audit (which is end-of-session)."
 ---
 
 # Workspace hygiene audit
@@ -14,7 +14,7 @@ description: "Runs a systems-architect hygiene audit of the user's full Cowork w
 - `about-me/disabled-skills.md` (if it exists)
 
 
-End-to-end systems audit of the user's Cowork workspace. Goal: fewer tokens, less drift, more predictable routing.
+End-to-end systems audit of the user's Claude workspace. Goal: fewer tokens, less drift, more predictable routing.
 
 Findings are workspace-shaped, not Claude-shaped: file structure, memory layers, routing maps, any dashboards or state files, scheduled tasks, skill drift.
 
@@ -100,7 +100,7 @@ Save the report as `outputs/system-audits/hygiene-audit-project-[name]-YYYY-MM-D
 
 A single bash command that captures: file count (excluding `*.backup-*`, `_archive/*`, `.git/*`, `.DS_Store`), total disk size, breakdown by top-level folder, top 20 biggest files, files older than 30 days, empty folders, `.DS_Store` count. Aim for no more than 45 lines of output.
 
-In parallel (separate tool turn), only if a scheduled-tasks tool is available (depending on the Cowork version it may be called `list_scheduled_tasks` or `list_triggers`; use whichever this session has, including completed tasks where the tool offers that), list the tasks. If none is available, skip this call and Step 5.
+In parallel (separate tool turn), only if a scheduled-tasks tool is available (depending on the Claude version it may be called `list_scheduled_tasks` or `list_triggers`; use whichever this session has, including completed tasks where the tool offers that), list the tasks. If none is available, skip this call and Step 5.
 
 ### Step 3: Sample-read routing-critical files (parallel, metadata-first)
 
@@ -249,10 +249,10 @@ Step 5 checks whether a task exists and is recorded. This step checks whether it
 1. **Broken paths:** a file or folder the instructions name that no longer exists.
 2. **Retired skills:** a skill the instructions call that is no longer in this session's skill list, or is listed in `about-me/disabled-skills.md`.
 3. **Expired dates and frozen counts:** "as of [date]", "the three projects", "all five tasks". A count written into prose about something that grows will be wrong later, and it will look like a fault in the thing counted.
-4. **Schedule restated in the instructions:** the schedule belongs in the task's own schedule setting. Instructions that also say "every Monday at 9" give two sources of truth, and only one gets updated.
+4. **Schedule restated in the instructions:** the schedule belongs in the task's own schedule setting. Instructions that also say "every Monday at 9" give two sources of truth, and only one gets updated. A kit reminder that names what it is for ("time for your weekly review") is not a restated schedule.
 5. **Questions in a run nobody watches:** an instruction to ask the user or wait for approval inside a task that fires on its own. With nobody there, the run stalls or the question gets answered without the user.
 6. **Lists and settings written into the instructions:** a list of names or a number that changes, typed straight into the task's instructions. Changing it means rewriting the instructions. Suggest moving it to a file the task reads, so the user edits the file instead.
-7. **A one-time reminder with no "already done" branch:** a one-off task that does not say what to do if the job was finished before it fired. Suggest one line such as "If this is already done, say so and stop."
+7. **A one-time reminder with no "already done" branch:** a one-off task that does not say what to do if the job was finished before it fired. Suggest one line such as "If this is already done, say so and stop." Exempt: a reminder whose full instructions are only the kit's fixed reminder line (`Tell the user: [...]. Do nothing else: read no files and ask no questions.`), because it only tells the user and can never act on work already finished.
 
 Report each finding with the task name, the exact line and suggested new wording. This step never edits a task: the user makes the change, exactly as Step 5 and Step 11 say.
 
@@ -330,7 +330,9 @@ Skip if output-mode is report-only.
 
 Use AskUserQuestion (if it is not available, ask the same questions in plain text, one at a time, and wait for each answer). Batch the high-severity decisions into one call with up to 4 questions. Always provide a Recommended option. Phrase each option as a concrete action with consequences spelled out.
 
-For M-severity findings, **show the full list first**, one line per fix naming the file and exactly what changes, then ask a single "apply these?" question with three options: do all as shown, approve individually, skip. **The list is not optional and never collapses into a count.** "Do all" is a yes on items the user has read, which is what the Safety section above requires; a yes on a hidden batch is not, and this skill never asks for one. Never put a change to a CLAUDE.md, a memory.md or a file in `about-me/` in the "do all" batch, and never a delete, a move or a changelog trim (which moves text into `_archive/`): those are always shown in full and approved on their own.
+For M-severity findings, **show the full list first**, one line per fix naming the file and exactly what changes, then ask a single "apply these?" question with three options: do all as shown, approve individually, skip. **The list is not optional and never collapses into a count.** "Do all" is a yes on items the user has read, which is what the Safety section above requires; a yes on a hidden batch is not, and this skill never asks for one. Never put a change to a CLAUDE.md, a memory.md or a file in `about-me/` in the "do all" batch, and never a delete, a move, a changelog trim (which moves text into `_archive/`) or a new scheduled task: those are always shown in full (a task with its full instructions) and approved on their own.
+
+If no reminder to run this audit is already set and a scheduled-tasks tool is available, offer one as its own question: show its name, its schedule and its full instructions (Step 11), and the registry row if `about-me/custom-workflows.md` exists. Never fold it into another question.
 
 ### Step 11: Execute approved fixes
 
@@ -339,7 +341,7 @@ For each approved fix, do the file operation directly. Rules:
 - Delete only items on the ALWAYS SAFE list that the user explicitly approved in Step 10 of this session; the ALWAYS SAFE classification only ever permits proposing, never deleting on its own
 - Edit any file in place surgically, never wholesale. **Before replacing text in ANY existing file - a CLAUDE.md, a memory.md, an about-me file, a resource file, a template, anything - copy the original to `[file].backup-[today's date]` (if a backup of that name already exists, add the time, `[file].backup-[date]-[HHMM]`; never overwrite an existing backup) and never remove that backup.** The kit promises a dated backup of anything it replaces, so the rule follows the act, not the filename: a changelog trim and a stale-date fix are replacements exactly as much as a constitution edit is
 - Any edit to a CLAUDE.md (the constitution), **a memory.md or a file in `about-me/`** must be shown in full and approved on its own, never applied as part of a blanket "do all"
-- Create scheduled tasks for items that need recurring enforcement (e.g. a monthly clean-up reminder). A task this skill creates may only remind the user (for example "time for your monthly workspace audit: say audit my workspace"); its prompt must never apply, move or delete anything, never ask questions in a run nobody is watching and never restate its own schedule in its instructions (Step 5b check 4); a one-time reminder also says what to do if the job is already done (Step 5b check 7). The task's approval item also shows the row it adds to the `Scheduled tasks` table in `about-me/custom-workflows.md` (if that file exists), so the next audit finds it registered. **And only ones the user saw and approved in Step 10, and only if a scheduled-tasks tool is available; if it is not, say so and put the proposed task in the report instead.** Never pause, edit, reschedule or delete an existing task: a task the user already has is theirs, and this skill proposes changes to it rather than making them
+- Offer one recurring reminder to run this audit (for example monthly). A task this skill creates may only remind the user, and its full instructions are only: `Tell the user: time for your workspace audit, say "audit my workspace". Do nothing else: read no files and ask no questions.` It never applies, moves or deletes anything, never asks questions in a run nobody is watching and never restates its own schedule in its instructions (Step 5b check 4). The task's approval item also shows the row it adds to the `Scheduled tasks` table in `about-me/custom-workflows.md` (if that file exists), so the next audit finds it registered. **And only ones the user saw and approved in Step 10, and only if a scheduled-tasks tool is available; if it is not, say so and put the proposed task in the report instead.** Never pause, edit, reschedule or delete an existing task: a task the user already has is theirs, and this skill proposes changes to it rather than making them
 - Where an approved fix changes a rule, propose the matching one-line note in the relevant CLAUDE.md (date and audit reference) as its own item: show it in full and write it only on its own yes, like any other CLAUDE.md edit
 
 ### Step 12: Re-measure, then confirm and close
@@ -375,7 +377,7 @@ This mode stands on its own: it skips Steps 0 to 12 and needs no audit first. It
 | `outputs/system-audits/hygiene-audit-YYYY-MM-DD.md` | Yes | The full report |
 | File moves and edits | Only on approved fixes | The actual cleanup |
 | Updates to `about-me/custom-workflows.md` | When scheduled-task registry drifted, or skill install drift detected | Registry sync |
-| New scheduled tasks | Only when proposed and approved | Recurring enforcement |
+| New scheduled tasks | Only when proposed and approved | Reminder only |
 
 ---
 

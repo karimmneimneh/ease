@@ -19,6 +19,8 @@ It works from the conversation. It reads no files to find signals; to confirm th
 - Offered proactively after a session with substantial work, in one line: "Want me to run a quick session audit before we close?" Do not push it on a short or casual session.
 - When triggered on a short or purely conversational session, run a quick Step 0 check; if it finds nothing open and there is nothing to save, the close is one line (for example "Nothing to save and nothing left open."), not the full steps.
 
+- If the user runs a second close later in the same chat, it covers only what happened since the last close; nothing already saved is proposed again.
+
 Do not run mid-task. This is an end-of-session pass.
 
 ---
@@ -44,13 +46,23 @@ Give each item **exactly one outcome** and write it beside the item:
 | Outcome | What makes it true |
 |---|---|
 | **Done** | Checked just now, read-only, not taken from an earlier message. If it cannot be checked, it is not Done |
-| **Finish now** | Small enough to finish in this close. Anything it would write or change is shown first and done only on the user's yes, with a dated backup before any replacement. Limited to closing small loose ends the session itself opened, such as saving a file it made into the working folder or adding a line it promised. Never used for deleting, moving or reordering anything, for new drafting of the user's own work (emails, slides, documents), for a change to `CLAUDE.md`, for creating, changing or cancelling a scheduled task or for anything that would send, post or publish: those are Your step or Next session. A line for a memory or `about-me/` file always goes through Steps 2 to 5 like any other save, never through Finish now. Once finished, the item is shown as Done (finished in this close) |
+| **Finish now** | Small enough to finish in this close. Anything it would write or change is shown first and done only on the user's yes, with a dated backup before any replacement. Limited to closing small loose ends the session itself opened, such as saving a file it made into the working folder or adding a line it promised. Never used for deleting, moving or reordering anything, for new drafting of the user's own work (emails, slides, documents), for a change to `CLAUDE.md`, for creating, changing or cancelling a scheduled task (except a reminder-only task the user approves in the pending round) or for anything that would send, post or publish: those are Your step or Next session. A line for a memory or `about-me/` file always goes through Steps 2 to 5 like any other save, never through Finish now. Once finished, the item is shown as Done (finished in this close) |
 | **Asked** | A question the user can answer now. Put it to them in this close, one question at a time, and apply the answer. Anything the answer would write still goes through Steps 2 to 5 or Finish now, on the user's yes |
 | **Your step** | Only the user can do it. Say what to do in numbered steps, one action each, with any text to paste in a code block, and end with how they will know it worked |
 | **Next session** | Carried by a short ready-to-paste prompt, shown in the closing message, that picks the work up in a new chat |
 | **Dropped** | Not worth doing. Give the reason in one line |
 
 Do not close while any item has no outcome, including items that Step 0b, Step 1 and Step 2b add to this list. If the session left nothing open, say so in one line. Step 0 only lists and asks; it writes nothing. Finish now items are done after Step 5, one at a time: show the exact change, wait for the user's yes and first back up any file it would replace as `[file].backup-[date]` (add the time if a backup from the same day already exists; never overwrite a backup). If the user says no, the item becomes Your step, Next session or Dropped.
+
+**The pending round.** Once every item has an outcome, put each Your step item, and each item waiting on another person, to the user one at a time: "Done already", "Do it now together", "Remind me on [date]" or "Drop". "Done already" is checked read-only where it can be; if it cannot be checked, the item stays Your step. "Do it now together" works inside the Finish now limits above: Claude shows each change and acts only on a yes, and never sends, deletes or writes to `CLAUDE.md`; for anything outside those limits Claude walks the user through it and the user does it. A blank or missing answer here is not an answer either: ask once more, and if it is still blank the item keeps its outcome.
+
+**A reminder** is created after Step 5 like a Finish now item, and only on a yes after the user has seen:
+
+- its name ("[item] reminder") and its date and time (if they named only a day, ask what time suits them);
+- its full instructions, which are only: `Tell the user: [item, in one line]. Do nothing else: read no files and ask no questions.`;
+- if `about-me/custom-workflows.md` exists, the row it would add to its `Scheduled tasks` table. If that file does not exist, say the task will not be recorded in a registry.
+
+If no scheduled-tasks tool is available in this chat, say plainly that nothing will remind them on that date and suggest a calendar entry. Then offer to note it as a dated line under `## Open items` in the project's `memory.md`, or in `about-me/memory.md` when the session had no project (adding the heading on the same yes if it is missing), proposed through Steps 2 to 5. An item waiting on someone else is never closed without a date to look again. Never say nothing is left for the user while a next-session prompt names a step for them.
 
 ---
 
@@ -79,7 +91,7 @@ The line between a rule and a one-off matters. A one-off is a tweak to one piece
 
 **Routes that failed.** A route that failed or cost extra steps this session (a tool that refused, a limit that was hit, a workaround that worked) is a signal too, even though the user never said it. Propose it as one dated line saying what to do instead, routed as Step 2 routes any signal. Say plainly that it is Claude's own lesson, not the user's words.
 
-If the scan finds nothing worth saving, say so in one line, work through any Finish now items (end of Step 5), then go to Step 6 to show the open-loops list. Do not invent signals to justify the run.
+If the scan finds nothing worth saving, say so in one line, work through any Finish now items and any approved reminder (end of Step 5), then go to Step 6 to show the open-loops list. Do not invent signals to justify the run.
 
 ---
 
@@ -99,7 +111,7 @@ For each caught signal, decide where it belongs, using the same routing the memo
 | A rule or preference for one project only | `projects/[name]/memory.md` |
 | A skill the user has switched off | `about-me/disabled-skills.md`, one row in its table |
 
-No-duplication rule: each signal goes to exactly one file, the deepest one it belongs in. Before proposing an entry, check the destination does not already say the same thing. If it does, drop the item and say in one line where it already lives. If the new signal changes an existing entry, propose a new dated entry beneath it; the old line stays (Step 5). If a destination file does not exist in this workspace, note that and propose creating it as part of the approval, rather than assuming it is there. If the destination is a project that does not exist yet (no `projects/[name]/` folder), never create a bare `memory.md` for it: offer to start the project with new-project-setup ("start a new project for [name]") and give the item the outcome Next session, or file it in `about-me/memory.md` if the user prefers.
+No-duplication rule: each signal goes to exactly one file, the deepest one it belongs in. Before proposing an entry, apply memory-router's replaces rule (Step 5 below): if the destination already says the same thing, drop the item and say in one line where it already lives; if the new signal is broader than an existing entry or contradicts it, the new entry ends "(replaces ...)" and the old line stays. If a destination file does not exist in this workspace, note that and propose creating it as part of the approval, rather than assuming it is there. If the destination is a project that does not exist yet (no `projects/[name]/` folder), never create a bare `memory.md` for it: offer to start the project with new-project-setup ("start a new project for [name]") and give the item the outcome Next session, or file it in `about-me/memory.md` if the user prefers.
 
 Before proposing an item, check its destination has room. The soft ceilings are in the `## Memory ceilings` section of the root `CLAUDE.md`. Count the file's lines: if the file is full (the kit's one test for "full": the file's line count plus the entry waiting to be saved would reach or pass its ceiling), do not propose adding it; say so, suggest running consolidate-memory first (the user says "tidy my memory for [file]"), and give the item the outcome Next session, with the exact entry written word for word into its next-session prompt. When several entries or a new heading are going to the same file in one go, count them together: if the total would reach or pass the ceiling, save only those that fit and send the rest down the same "tidy my memory for [file]" path. If the workspace records no ceilings, use the kit defaults: `about-me/memory.md` 50 lines, `workstations/*/memory.md` 150, `projects/*/memory.md` 200. For any other file with no ceiling, say "no ceiling on record" and go ahead. Never raise a ceiling.
 
@@ -149,7 +161,7 @@ Ask the user which items to save. Use AskUserQuestion where it fits, or a simple
 
 "Save all" is allowed because Step 3 has already shown the exact entry for every item, so it is a yes on things the user has read, which is what item-by-item approval is protecting. A yes on a batch they have NOT seen is a different thing and this skill never asks for one: if any item's exact text was not shown, it does not go in the "save all".
 
-Save only what the user approves. If they approve none, that is a valid outcome: skip the appends, but still work through any Finish now items (end of Step 5) before Step 6.
+Save only what the user approves. A blank or missing answer is not a yes: ask that item once more, and if it is still blank, save nothing for it and give it the outcome Next session. If they approve none, that is a valid outcome: skip the appends, but still work through any Finish now items and any approved reminder (end of Step 5) before Step 6.
 
 ---
 
@@ -161,10 +173,10 @@ For each approved item, append it to its destination file as a dated entry. Stri
 - **Never overwrite, reorder or rewrite** any existing line in the file. Even if the new entry supersedes an old one, leave the old text in place and add the new dated entry beneath it.
 - **Match the file's existing format** (table row, bullet, dated line) so the file stays consistent.
 - **Apply the workspace voice rules** from `about-me/writing-rules.md`, if it exists (the user's own tone, spelling and formatting; do not impose any default) to anything you write.
-- **For `about-me/how-claude-works-with-me.md` and `about-me/writing-rules.md`, follow the memory-router skill's rules for those files:** a line that contradicts one already there ends "(replaces '[first few words of the old line]', [date])" and the old line stays; and if the change alters something the user pasted into Cowork's Global instructions, show the updated block and ask the separate question about the saved copy, exactly as memory-router's Step 5 does. Show both in Step 3, beside the entry, so nothing is written on a yes given before it was seen.
+- **For every destination file, use memory-router's replaces rule (its Step 5):** before proposing an entry, search the file for a line it repeats, makes broader or contradicts. A repeat is not proposed; a broader or contradicting entry ends "(replaces '[first few words of the old line]', [date])" and the old line stays. **For `about-me/how-claude-works-with-me.md` and `about-me/writing-rules.md`, also follow memory-router's Instructions for Claude rule:** if the change alters something the user pasted into their Instructions for Claude, show the updated block and ask the separate question about the saved copy, exactly as memory-router's Step 5 does. Show both in Step 3, beside the entry, so nothing is written on a yes given before it was seen.
 - If a destination file was missing and the user approved creating it, create it with a simple heading and then append the entry.
 
-Then work through any Finish now items from Step 0, one at a time, as Step 0 describes.
+Then work through any Finish now items from Step 0, and any reminder the user approved in the pending round, one at a time, as Step 0 describes.
 
 ---
 
@@ -188,7 +200,7 @@ Next-session prompt (paste into a new chat):
 "Continue the quarterly report in projects/report. The first half is in outputs/report-draft.md; write sections 4 to 6 in the same format."
 ```
 
-Provide a clickable link to any file you wrote to. Then stop. Do not chain into another action.
+Provide a clickable link to any file you wrote to. End on one line: "Task is closed." when no item is Your step or Next session, "Task is closed. Your steps are listed above." when only Your step items remain, or "Session closed. Work continues." when any item is Next session. Then stop. Do not chain into another action.
 
 ---
 
@@ -202,10 +214,11 @@ Provide a clickable link to any file you wrote to. Then stop. Do not chain into 
 
 ## What this skill does not do
 
-- Does not write anything before the user approves it, item by item. It is read-only until then, and that includes finishing an open loop.
+- Does not write anything before the user approves it, item by item or as a yes on a list whose exact entries were shown. It is read-only until then, and that includes finishing an open loop.
 - Does not close with an unfinished item left unmentioned: every open loop gets one outcome.
 - Does not delete, reorder or reorganise existing content. Memory files are append-only: new dated entries only. The one change it makes to an existing file is finishing an open loop the user approved after seeing the exact change, and that file is backed up first.
 - Does not send, post or publish anything. An item that needs sending is always Your step.
+- Does not create any scheduled task except a reminder-only one the user approved, word for word, in the pending round.
 - Does not write to `CLAUDE.md`. A finding that belongs there is shown as the exact line, for the user to decide.
 - Does not save one-off tweaks, or save an uncertain item silently; uncertain items are surfaced for the user to decide and never dropped.
 - Does not read files to hunt for signals; it works from the conversation, and only looks at a file, folder or task, read-only, to confirm an open loop is done, a claim still holds or a destination has no duplicate and has room.
