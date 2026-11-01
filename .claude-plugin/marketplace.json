@@ -6,18 +6,18 @@
     "url": "https://karimmneimneh.com"
   },
   "metadata": {
-    "description": "EASE: two Claude Cowork plugins that set up and look after your workspace safely."
+    "description": "EASE: two Claude plugins that set up and look after your workspace safely."
   },
   "plugins": [
     {
       "name": "ease-os",
       "source": "./ease-os",
-      "description": "Sixteen workspace skills that set up, personalise and maintain a Claude Cowork workspace safely. Nothing changes without your approval."
+      "description": "Sixteen workspace skills that set up, personalise and maintain a Claude workspace safely. Nothing changes without your approval."
     },
     {
       "name": "ease-day-one",
       "source": "./ease-day-one",
-      "description": "A from-zero, safe setup guide for complete beginners on Claude Cowork, ending in one real result."
+      "description": "A from-zero, safe setup guide for complete beginners on Claude, ending in one real result."
     }
   ]
 }
